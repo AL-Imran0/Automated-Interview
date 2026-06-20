@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HireAI Pro — Smart Interview Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f6fb;
+  --bg2:#ffffff;
+  --bg3:#eef1f8;
+  --surface:#ffffff;
+  --surface2:#f0f3fa;
+  --border:rgba(60,100,200,0.12);
+  --border2:rgba(60,100,200,0.22);
+  --accent:#3563e9;
+  --accent2:#5b87ff;
+  --accentd:rgba(53,99,233,0.10);
+  --green:#16a34a;
+  --greend:rgba(22,163,74,0.10);
+  --amber:#d97706;
+  --amberd:rgba(217,119,6,0.10);
+  --red:#dc2626;
+  --redd:rgba(220,38,38,0.09);
+  --gold:#f59e0b;
+  --text:#111827;
+  --text2:#4b5563;
+  --text3:#9ca3af;
+  --shadow:0 4px 24px rgba(60,100,200,0.08);
+  --shadow2:0 8px 40px rgba(60,100,200,0.13);
+  --easy:#16a34a;--mid:#d97706;--hard:#dc2626;
+  --r:10px;--r2:16px;--r3:22px
+}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden}
+
+/* ─── SETUP ─── */
+#setupScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#e8eeff 0%,#f4f6fb 50%,#fef3c7 100%);
+  padding:2rem;position:relative;overflow:hidden;
+}
+#setupScreen::before{
+  content:'';position:absolute;width:500px;height:500px;
+  background:radial-gradient(circle,rgba(53,99,233,0.08) 0%,transparent 70%);
+  top:-100px;right:-100px;pointer-events:none;
+}
+#setupScreen::after{
+  content:'';position:absolute;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(245,158,11,0.07) 0%,transparent 70%);
+  bottom:-80px;left:-80px;pointer-events:none;
+}
+.setup-card{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:28px;
+  padding:2.5rem;width:100%;max-width:520px;
+  box-shadow:0 20px 60px rgba(60,100,200,0.12),0 4px 16px rgba(0,0,0,0.04);
+  position:relative;z-index:1;
+}
+.setup-brand{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.5rem;
+}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:brandPulse 2s ease-in-out infinite}
+@keyframes brandPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+.setup-title{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--text);margin-bottom:6px;line-height:1.2}
+.setup-sub{font-family:'Playfair Display',serif;font-size:16px;color:var(--text2);margin-bottom:2rem;font-style:italic;line-height:1.5}
+
+/* Photo upload */
+.photo-upload-area{
+  display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding:1rem;
+  border:2px dashed var(--border2);border-radius:var(--r2);
+  background:var(--bg3);cursor:pointer;transition:all .2s;
+}
+.photo-upload-area:hover{border-color:var(--accent);background:var(--accentd)}
+.photo-preview{
+  width:56px;height:56px;border-radius:50%;background:var(--surface2);
+  border:2px solid var(--border2);overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.photo-upload-text{font-size:13px;font-weight:600;color:var(--text2)}
+.photo-upload-sub{font-size:11px;color:var(--text3);margin-top:2px}
+input#photoInput{display:none}
+
+.form-group{margin-bottom:1.1rem}
+.form-label{display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.form-input{
+  width:100%;padding:12px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);
+  color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;font-weight:500;
+}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(53,99,233,0.1);background:var(--bg2)}
+.form-input::placeholder{color:var(--text3);font-weight:400}
+.btn-start{
+  width:100%;padding:14px;background:var(--accent);color:white;border:none;border-radius:var(--r);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+  transition:all .2s;margin-top:.75rem;letter-spacing:.02em;
+  box-shadow:0 4px 16px rgba(53,99,233,0.3);
+}
+.btn-start:hover{background:#2451d4;box-shadow:0 6px 24px rgba(53,99,233,0.4);transform:translateY(-1px)}
+.btn-start:active{transform:scale(.98)}
+
+.humor-note{
+  margin-top:1rem;padding:10px 14px;background:var(--amberd);border:1px solid rgba(217,119,6,0.2);
+  border-radius:var(--r);font-size:12px;color:var(--amber);font-style:italic;text-align:center;
+}
+
+/* ─── MAIN SHELL ─── */
+#mainShell{display:none;flex-direction:column;min-height:100vh;background:var(--bg)}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  height:58px;background:var(--bg2);border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;padding:0 1.75rem;gap:14px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(60,100,200,0.06);
+}
+.topbar-logo{font-size:17px;font-weight:800;letter-spacing:-.03em;color:var(--text)}
+.topbar-logo span{color:var(--accent)}
+.tb-div{width:1px;height:22px;background:var(--border2)}
+.tb-session{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.phase-tag{
+  padding:4px 13px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;border:1.5px solid;transition:all .3s;
+}
+.phase-tag.easy{background:var(--greend);color:var(--easy);border-color:rgba(22,163,74,.25)}
+.phase-tag.mid{background:var(--amberd);color:var(--amber);border-color:rgba(217,119,6,.25)}
+.phase-tag.hard{background:var(--redd);color:var(--red);border-color:rgba(220,38,38,.25)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.timer{
+  font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--text2);letter-spacing:.06em;
+  background:var(--bg3);padding:4px 12px;border-radius:8px;border:1px solid var(--border);
+}
+.timer.urgent{color:var(--red);background:var(--redd);border-color:rgba(220,38,38,.25)}
+.tb-cand{font-size:13px;font-weight:700;color:var(--text2)}
+
+/* ─── CONTENT AREA ─── */
+.content{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* ─── LEFT: AVATAR PANEL ─── */
+.avatar-panel{
+  width:320px;flex-shrink:0;background:var(--bg2);border-right:1.5px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:1.5rem 1.25rem;gap:.9rem;overflow-y:auto;
+  box-shadow:2px 0 16px rgba(60,100,200,0.04);
+}
+
+/* Candidate photo */
+.cand-photo-wrap{
+  width:72px;height:72px;border-radius:50%;overflow:hidden;
+  border:3px solid var(--accent);box-shadow:0 0 0 4px rgba(53,99,233,0.12);
+  flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.cand-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.cand-name-label{font-size:13px;font-weight:700;color:var(--text);text-align:center}
+.cand-role-label{font-size:11px;color:var(--text3);text-align:center;font-weight:500}
+
+/* Alex avatar */
+.alex-wrap{
+  position:relative;width:100%;max-width:240px;
+  filter:drop-shadow(0 8px 24px rgba(53,99,233,0.15));
+}
+.alex-wrap svg{width:100%;height:auto;border-radius:20px}
+.speak-ring{
+  position:absolute;inset:-5px;border-radius:25px;
+  border:2.5px solid var(--accent);opacity:0;
+  transition:opacity .3s;
+  animation:ringPulse 1.4s ease-in-out infinite;
+}
+.speak-ring.active{opacity:1}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(53,99,233,0.35)}50%{box-shadow:0 0 0 14px rgba(53,99,233,0)}}
+
+.alex-name{
+  font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);text-align:center;
+}
+.alex-title{font-size:11px;color:var(--text3);text-align:center;font-style:italic}
+
+.status-bar{
+  display:flex;align-items:center;gap:8px;width:100%;
+  padding:8px 14px;border-radius:99px;border:1.5px solid var(--border);
+  background:var(--bg3);font-size:12px;font-weight:600;color:var(--text2);
+  transition:all .3s;
+}
+.status-dot-anim{width:7px;height:7px;border-radius:50%;background:var(--text3);transition:background .3s;flex-shrink:0}
+.status-bar.speaking{border-color:var(--accent);color:var(--accent);background:var(--accentd)}
+.status-bar.speaking .status-dot-anim{background:var(--accent);animation:dotPulse .6s ease-in-out infinite alternate}
+.status-bar.listening{border-color:var(--green);color:var(--green);background:var(--greend)}
+.status-bar.listening .status-dot-anim{background:var(--green);animation:dotPulse .4s ease-in-out infinite alternate}
+@keyframes dotPulse{from{transform:scale(1);opacity:1}to{transform:scale(1.5);opacity:.5}}
+
+/* Q progress dots */
+.q-dots{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.qdot{
+  width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:var(--text3);transition:all .3s;
+}
+.qdot.current{background:var(--accent);color:white;border-color:var(--accent);transform:scale(1.1)}
+.qdot.done-easy{background:var(--greend);border-color:var(--easy);color:var(--easy)}
+.qdot.done-mid{background:var(--amberd);border-color:var(--amber);color:var(--amber)}
+.qdot.done-hard{background:var(--redd);border-color:var(--red);color:var(--red)}
+.qdot.skip{opacity:.4}
+
+.score-chip{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:10px 14px;border-radius:var(--r);background:var(--bg3);border:1.5px solid var(--border);
+}
+.score-chip-val{font-size:26px;font-weight:800;color:var(--accent)}
+.humor-tip{
+  width:100%;padding:9px 12px;border-radius:var(--r);
+  background:var(--amberd);border:1px solid rgba(217,119,6,.2);
+  font-size:11px;color:var(--amber);font-style:italic;line-height:1.4;text-align:center;
+}
+
+/* ─── RIGHT: INTERVIEW PANEL ─── */
+.interview-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:1.5rem 2rem}
+
+/* Alex message bubble */
+.alex-bubble{
+  display:flex;gap:12px;margin-bottom:1.25rem;
+  animation:slideIn .4s ease;
+}
+.alex-bubble-avatar{
+  width:38px;height:38px;border-radius:50%;background:var(--accentd);
+  border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;margin-top:4px;
+}
+.alex-bubble-body{
+  background:var(--bg2);border:1.5px solid var(--border2);border-radius:4px 16px 16px 16px;
+  padding:14px 18px;max-width:92%;box-shadow:var(--shadow);
+}
+.alex-bubble-meta{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.alex-bubble-name{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.03em}
+.q-cat-tag{
+  padding:2px 9px;border-radius:99px;font-size:10px;font-weight:700;
+  background:var(--accentd);color:var(--accent);border:1px solid rgba(53,99,233,.2);
+}
+.diff-pill{
+  margin-left:auto;padding:2px 10px;border-radius:99px;
+  font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+}
+.diff-pill.easy{background:var(--greend);color:var(--easy)}
+.diff-pill.mid{background:var(--amberd);color:var(--amber)}
+.diff-pill.hard{background:var(--redd);color:var(--red)}
+.q-text{
+  font-size:16px;line-height:1.65;color:var(--text);font-weight:500;
+}
+.q-hint{
+  margin-top:10px;padding:10px 14px;border-radius:var(--r);
+  background:var(--bg3);border-left:3px solid var(--accent);
+  font-size:12.5px;color:var(--text2);font-style:italic;
+  display:none;
+}
+.typing-indicator{
+  display:flex;align-items:center;gap:5px;padding:4px 0;
+}
+.typing-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--text3);
+  animation:typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+
+/* Answer section */
+.ans-section{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);
+}
+.ans-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:8px;
+}
+textarea#answerBox{
+  width:100%;min-height:110px;padding:12px 16px;
+  background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);
+  color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.7;
+  resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;font-weight:500;
+}
+textarea#answerBox:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(53,99,233,.08);background:var(--bg2)}
+textarea#answerBox::placeholder{color:var(--text3);font-weight:400}
+textarea#answerBox:disabled{opacity:.55;cursor:not-allowed}
+
+.btn-row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.btn{
+  padding:10px 20px;border-radius:var(--r);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.03em;cursor:pointer;border:1.5px solid;
+  transition:all .18s;
+}
+.btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 3px 10px rgba(53,99,233,0.25)}
+.btn-primary:hover{background:#2451d4;transform:translateY(-1px);box-shadow:0 5px 16px rgba(53,99,233,0.35)}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{background:var(--surface2);color:var(--text3);border-color:var(--border);cursor:not-allowed;box-shadow:none;transform:none}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.btn-mic{
+  padding:10px 16px;border-radius:var(--r);border:1.5px solid;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-mic.idle{background:var(--bg3);border-color:var(--border2);color:var(--text2)}
+.btn-mic.idle:hover{border-color:var(--accent);color:var(--accent);background:var(--accentd)}
+.btn-mic.active{background:var(--redd);border-color:var(--red);color:var(--red);animation:micPulse .9s ease-in-out infinite alternate}
+@keyframes micPulse{from{box-shadow:0 0 0 0 rgba(220,38,38,.25)}to{box-shadow:0 0 0 9px rgba(220,38,38,0)}}
+.skip-link{margin-left:auto;font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.skip-link:hover{color:var(--text2)}
+
+/* History */
+.hist-wrap{margin-top:1.25rem}
+.hist-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.hist-items{display:flex;flex-direction:column;gap:8px}
+.hist-item{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:0 12px;
+  animation:slideIn .3s ease;box-shadow:var(--shadow);
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hist-badge{
+  padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;height:fit-content;margin-top:2px;
+}
+.hist-badge.easy{background:var(--greend);color:var(--easy)}
+.hist-badge.mid{background:var(--amberd);color:var(--amber)}
+.hist-badge.hard{background:var(--redd);color:var(--red)}
+.hist-q{font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.hist-a{font-size:13px;color:var(--text);line-height:1.5;font-weight:500}
+
+/* ─── BOTTOM BAR ─── */
+.bottom-bar{
+  background:var(--bg2);border-top:1.5px solid var(--border);
+  padding:.85rem 1.75rem;display:flex;align-items:center;gap:1.5rem;
+  box-shadow:0 -2px 12px rgba(60,100,200,0.05);
+}
+.prog-track{flex:1;height:6px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--easy),var(--accent));border-radius:99px;transition:width .5s ease}
+.prog-label{font-size:12px;color:var(--text3);white-space:nowrap;font-weight:600}
+.phase-segs{display:flex;gap:4px}
+.seg-block{width:36px;height:6px;border-radius:99px;opacity:.2;transition:opacity .4s}
+.seg-block.done{opacity:1}
+.seg-block.easy{background:var(--easy)}.seg-block.mid{background:var(--amber)}.seg-block.hard{background:var(--red)}
+
+/* ─── RESULTS ─── */
+#resultsScreen{
+  display:none;min-height:100vh;background:linear-gradient(135deg,#e8eeff 0%,#f4f6fb 60%,#fef3c7 100%);
+  padding:3rem 2rem;flex-direction:column;align-items:center;gap:1.75rem;
+}
+.result-header{text-align:center}
+.result-icon{
+  width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
+  background:var(--greend);border:2px solid var(--green);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  box-shadow:0 0 0 8px rgba(22,163,74,0.1);
+}
+.result-name{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+.result-sub{font-family:'Playfair Display',serif;font-size:16px;color:var(--text2);margin-top:4px;font-style:italic}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;width:100%;max-width:720px}
+.result-card{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem;box-shadow:var(--shadow);
+}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.rc-val{font-size:30px;font-weight:800;color:var(--accent)}
+.rc-sub{font-size:12px;color:var(--text2);margin-top:3px;font-weight:500}
+.verdict-box{
+  background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r2);
+  padding:1.5rem;width:100%;max-width:720px;box-shadow:var(--shadow2);
+}
+.verdict-rec{font-size:20px;font-weight:800;margin-bottom:4px}
+.verdict-stars{font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:10px}
+.verdict-note{font-size:14px;color:var(--text2);line-height:1.6;font-weight:500}
+.ar-item{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow);
+}
+.ar-q{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600}
+.ar-a{font-size:13px;color:var(--text);line-height:1.55;font-weight:500}
+.ar-score{font-size:11px;font-weight:800;color:var(--accent);margin-top:5px}
+.ar-feedback{font-size:12px;color:var(--text2);margin-top:4px;font-style:italic;border-top:1px solid var(--border);padding-top:6px}
+.btn-restart{
+  padding:12px 32px;background:var(--accent);color:white;
+  border:none;border-radius:var(--r);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(53,99,233,0.3);
+}
+.btn-restart:hover{background:#2451d4;transform:translateY(-1px)}
+
+/* ─── TRANSITIONS ─── */
+.fade-in{animation:fadeIn .4s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Loading overlay */
+.ai-loading{
+  display:none;position:fixed;inset:0;background:rgba(244,246,251,0.85);
+  backdrop-filter:blur(8px);z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;gap:1rem;
+}
+.ai-loading.show{display:flex}
+.loading-spinner{
+  width:44px;height:44px;border:3px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;font-weight:600;color:var(--text2)}
+</style>
+</head>
+<body>
+
+<!-- ═══ AI LOADING OVERLAY ═══ -->
+<div class="ai-loading" id="aiLoading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Alex is thinking...</div>
+</div>
+
+<!-- ═══════════ SETUP SCREEN ═══════════ -->
+<div id="setupScreen">
+  <div class="setup-card fade-in">
+    <div class="setup-brand">
+      <div class="brand-dot"></div>
+      HireAI Pro — English Interview
+    </div>
+    <h1 class="setup-title">Meet Alex 🤖<br>Your AI Interviewer</h1>
+    <p class="setup-sub">"I promise I won't ask you to describe yourself as a fruit. But I do ask real questions!"</p>
+
+    <!-- Photo Upload -->
+    <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
+      <div class="photo-preview" id="photoPreview">📷</div>
+      <div>
+        <div class="photo-upload-text">Upload your photo (optional)</div>
+        <div class="photo-upload-sub">JPG, PNG — Click to browse</div>
+      </div>
+    </div>
+    <input type="file" id="photoInput" accept="image/*" onchange="handlePhoto(this)">
+
+    <div class="form-group">
+      <label class="form-label">Your Full Name</label>
+      <input class="form-input" id="inputName" type="text" placeholder="e.g. Rahim Ahmed">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Position You're Applying For</label>
+      <input class="form-input" id="inputRole" type="text" placeholder="e.g. Senior Software Engineer">
+    </div>
+
+    <button class="btn-start" onclick="startInterview()">Begin Interview with Alex →</button>
+
+    <div class="humor-note">
+      😄 Warning: Alex has a good sense of humor but still gives you real scores. Be yourself!
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN INTERVIEW SHELL ═══════════ -->
+<div id="mainShell">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-logo">Hire<span>AI</span> Pro</div>
+    <div class="tb-div"></div>
+    <div class="tb-session">Live English Session</div>
+    <div class="phase-tag easy" id="phaseTag">Phase: Warmup</div>
+    <div class="tb-right">
+      <span class="tb-cand" id="tbCandName"></span>
+      <div class="tb-div"></div>
+      <div class="timer" id="timerEl">00:00</div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- LEFT: AVATAR + CANDIDATE -->
+    <div class="avatar-panel">
+
+      <!-- Candidate photo -->
+      <div class="cand-photo-wrap" id="candPhotoWrap">👤</div>
+      <div class="cand-name-label" id="candNameLabel">—</div>
+      <div class="cand-role-label" id="candRoleLabel">—</div>
+
+      <!-- Alex avatar SVG -->
+      <div class="alex-wrap">
+        <div class="speak-ring" id="speakRing"></div>
+        <svg id="avatarSVG" viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg2G" cx="50%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#dbeafe"/>
+              <stop offset="100%" stop-color="#bfdbfe"/>
+            </radialGradient>
+            <radialGradient id="skin2G" cx="42%" cy="38%" r="60%">
+              <stop offset="0%" stop-color="#fde68a"/>
+              <stop offset="60%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#d97706"/>
+            </radialGradient>
+            <radialGradient id="skin2G2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fcd34d"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </radialGradient>
+          </defs>
+          <!-- Background -->
+          <rect width="360" height="460" fill="url(#bg2G)" rx="20"/>
+          <!-- Desk glow -->
+          <rect x="0" y="380" width="360" height="80" fill="#1e40af" opacity=".06"/>
+          <rect x="0" y="378" width="360" height="4" fill="#3563e9" opacity=".15"/>
+          <!-- SUIT BODY -->
+          <path d="M 15 460 L 60 310 L 125 338 L 180 360 L 235 338 L 300 310 L 345 460 Z" fill="#1e3a8a"/>
+          <!-- Lapels -->
+          <path d="M 60 310 L 125 338 L 110 378 L 50 364 Z" fill="#1e40af"/>
+          <path d="M 300 310 L 235 338 L 250 378 L 310 364 Z" fill="#1e40af"/>
+          <!-- Shirt -->
+          <path d="M 125 338 L 180 360 L 235 338 L 228 460 L 132 460 Z" fill="#eff6ff"/>
+          <!-- Collar -->
+          <path d="M 154 324 L 180 352 L 178 322 L 165 316 Z" fill="#eff6ff"/>
+          <path d="M 206 324 L 180 352 L 182 322 L 195 316 Z" fill="#eff6ff"/>
+          <!-- Tie -->
+          <path d="M 174 324 L 186 324 L 193 395 L 180 408 L 167 395 Z" fill="#dc2626"/>
+          <path d="M 174 324 L 186 324 L 180 337 Z" fill="#991b1b"/>
+          <!-- Badge/pin -->
+          <circle cx="98" cy="328" r="6" fill="#3563e9"/>
+          <text x="98" y="332" text-anchor="middle" font-size="6" fill="white" font-weight="bold">AI</text>
+
+          <!-- NECK -->
+          <path d="M 158 256 Q 156 300 164 320 L 196 320 Q 204 300 202 256 Z" fill="url(#skin2G)"/>
+
+          <!-- HEAD -->
+          <ellipse id="headEl2" cx="180" cy="182" rx="88" ry="96" fill="url(#skin2G)"/>
+
+          <!-- Slight chin shadow -->
+          <ellipse cx="180" cy="264" rx="50" ry="14" fill="#d97706" opacity=".18"/>
+
+          <!-- HAIR -->
+          <path d="M 94 165 Q 90 105 114 82 Q 142 60 180 58 Q 218 60 246 82 Q 270 105 266 165 Q 252 132 232 120 Q 208 108 180 108 Q 152 108 128 120 Q 108 132 94 165 Z" fill="#1c1917"/>
+          <path d="M 94 165 Q 92 206 100 232 Q 103 222 104 196 Q 104 176 112 162 Z" fill="#0c0a09"/>
+          <path d="M 266 165 Q 268 206 260 232 Q 257 222 256 196 Q 256 176 248 162 Z" fill="#0c0a09"/>
+          <!-- Ear -->
+          <ellipse cx="94" cy="193" rx="12" ry="18" fill="url(#skin2G2)"/>
+          <ellipse cx="94" cy="193" rx="7" ry="11" fill="#f59e0b" opacity=".35"/>
+          <ellipse cx="266" cy="193" rx="12" ry="18" fill="url(#skin2G2)"/>
+          <ellipse cx="266" cy="193" rx="7" ry="11" fill="#f59e0b" opacity=".35"/>
+
+          <!-- Glasses -->
+          <rect x="102" y="156" width="60" height="36" rx="12" fill="none" stroke="#1e3a8a" stroke-width="3"/>
+          <rect x="168" y="156" width="60" height="36" rx="12" fill="none" stroke="#1e3a8a" stroke-width="3"/>
+          <line x1="162" y1="171" x2="168" y2="171" stroke="#1e3a8a" stroke-width="2.5"/>
+          <line x1="94" y1="170" x2="102" y2="170" stroke="#1e3a8a" stroke-width="2"/>
+          <line x1="228" y1="170" x2="266" y2="170" stroke="#1e3a8a" stroke-width="2"/>
+          <!-- Lens tint -->
+          <rect x="104" y="158" width="56" height="32" rx="10" fill="#bfdbfe" opacity=".35"/>
+          <rect x="170" y="158" width="56" height="32" rx="10" fill="#bfdbfe" opacity=".35"/>
+
+          <!-- EYEBROWS -->
+          <path d="M 112 150 Q 130 142 148 148" stroke="#1c1917" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+          <path d="M 192 148 Q 210 142 228 150" stroke="#1c1917" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+
+          <!-- LEFT EYE -->
+          <ellipse cx="132" cy="174" rx="20" ry="14" fill="white"/>
+          <circle cx="133" cy="174" r="9" fill="#1e3a8a"/>
+          <circle cx="133" cy="174" r="5" fill="#030712"/>
+          <circle cx="129" cy="170" r="3" fill="white" opacity=".9"/>
+
+          <!-- Right EYE -->
+          <ellipse cx="208" cy="174" rx="20" ry="14" fill="white"/>
+          <circle cx="207" cy="174" r="9" fill="#1e3a8a"/>
+          <circle cx="207" cy="174" r="5" fill="#030712"/>
+          <circle cx="203" cy="170" r="3" fill="white" opacity=".9"/>
+
+          <!-- Eyelids (blink) -->
+          <ellipse id="leftLid2" cx="132" cy="174" rx="20" ry="1" fill="url(#skin2G)"/>
+          <ellipse id="rightLid2" cx="208" cy="174" rx="20" ry="1" fill="url(#skin2G)"/>
+
+          <!-- Eyebrow lines on glasses -->
+
+          <!-- NOSE -->
+          <path d="M 174 196 L 168 222 Q 172 228 180 229 Q 188 228 192 222 L 186 196" fill="none" stroke="#d97706" stroke-width="1.2" opacity=".5"/>
+          <ellipse cx="172" cy="225" rx="6" ry="4" fill="#f59e0b" opacity=".25"/>
+          <ellipse cx="188" cy="225" rx="6" ry="4" fill="#f59e0b" opacity=".25"/>
+
+          <!-- CHEEKS (cute rosy) -->
+          <ellipse cx="118" cy="210" rx="20" ry="12" fill="#f87171" opacity=".13"/>
+          <ellipse cx="242" cy="210" rx="20" ry="12" fill="#f87171" opacity=".13"/>
+
+          <!-- MOUTH GROUP -->
+          <g id="mouthGroup2">
+            <!-- Smile base upper lip -->
+            <path d="M 152 245 Q 167 238 180 241 Q 193 238 208 245 Q 193 251 180 249 Q 167 251 152 245 Z" fill="#e07050"/>
+            <!-- Lower lip -->
+            <path id="lowerLip2" d="M 152 245 Q 180 261 208 245" fill="#f0906a" opacity=".85"/>
+            <!-- Lip seam -->
+            <path id="lipSeam2" d="M 152 245 Q 180 249 208 245" stroke="#c05040" stroke-width="1.6" fill="none" opacity=".6"/>
+            <!-- Inner mouth -->
+            <ellipse id="innerMouth2" cx="180" cy="249" rx="24" ry="0" fill="#1a0808"/>
+            <!-- Teeth -->
+            <ellipse id="teethEl2" cx="180" cy="246" rx="19" ry="0" fill="#f5f0eb"/>
+            <!-- Tongue -->
+            <ellipse id="tongueEl2" cx="180" cy="254" rx="10" ry="0" fill="#d05050" opacity=".8"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="alex-name">Alex 🤖</div>
+      <div class="alex-title">Your AI Interview Coach</div>
+
+      <div class="status-bar" id="statusBar">
+        <div class="status-dot-anim" id="statusDot"></div>
+        <span id="statusText">Ready to begin</span>
+      </div>
+
+      <div class="q-dots" id="qDots"></div>
+
+      <div class="score-chip">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Score</div>
+          <div class="score-chip-val" id="livScore">—</div>
+        </div>
+        <div style="margin-left:2px;font-size:12px;color:var(--text3)">/100</div>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:10px;color:var(--text3);font-weight:600">Answered</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text2)" id="livAnswered">0/0</div>
+        </div>
+      </div>
+
+      <div class="humor-tip" id="humorTipEl">💡 Tip: Take a breath. Alex is friendly — he just looks serious because of the tie.</div>
+
+    </div>
+
+    <!-- RIGHT: INTERVIEW -->
+    <div class="interview-panel" id="interviewPanel">
+
+      <!-- Alex's question bubble -->
+      <div class="alex-bubble fade-in" id="questionBubble">
+        <div class="alex-bubble-avatar">🤖</div>
+        <div class="alex-bubble-body">
+          <div class="alex-bubble-meta">
+            <div class="alex-bubble-name">Alex</div>
+            <div class="q-cat-tag" id="qCat">Introduction</div>
+            <div class="diff-pill easy" id="diffPill">Easy</div>
+          </div>
+          <div class="q-text" id="qText">
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+          <div class="q-hint" id="qHint"></div>
+        </div>
+      </div>
+
+      <!-- Answer section -->
+      <div class="ans-section" id="answerSection">
+        <div class="ans-label">
+          <span>✍️ Your Answer</span>
+          <span id="wordCountEl" style="font-variant-numeric:tabular-nums;font-weight:600">0 words</span>
+        </div>
+        <textarea id="answerBox" placeholder="Type your answer here, or click 🎙 to speak..." onkeyup="onAnswerType()"></textarea>
+        <div class="btn-row">
+          <button class="btn-mic idle" id="micBtn" onclick="toggleMic()">
+            <span id="micIcon">🎙</span>
+            <span id="micLabel">Speak</span>
+          </button>
+          <button class="btn btn-ghost" id="hintBtn" onclick="toggleHint()">💡 Hint</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer →</button>
+          <span class="skip-link" onclick="skipQuestion()">Skip →</span>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="hist-wrap" id="histWrap" style="display:none">
+        <div class="hist-title">📋 Previous Answers</div>
+        <div class="hist-items" id="histItems"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="phase-segs">
+      <div class="seg-block easy done" id="seg-easy"></div>
+      <div class="seg-block mid" id="seg-mid"></div>
+      <div class="seg-block hard" id="seg-hard"></div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-label" id="progLabel">0 / 8</div>
+  </div>
+
+</div>
+
+<!-- ═══════════ RESULTS SCREEN ═══════════ -->
+<div id="resultsScreen">
+  <div class="result-header fade-in">
+    <div class="result-icon">✓</div>
+    <div class="result-name" id="resName"></div>
+    <div class="result-sub">Interview Complete — Alex's Final Report</div>
+  </div>
+
+  <div class="result-grid" id="resGrid"></div>
+
+  <div class="verdict-box" id="verdictBox">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">🤖 Alex's Hiring Recommendation</div>
+    <div class="verdict-rec" id="verdictRec"></div>
+    <div class="verdict-stars" id="verdictStars"></div>
+    <div class="verdict-note" id="verdictNote"></div>
+  </div>
+
+  <div style="width:100%;max-width:720px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">📝 Answer Review with AI Feedback</div>
+    <div id="arItems"></div>
+  </div>
+
+  <button class="btn-restart" onclick="location.reload()">🔄 Start New Interview</button>
+</div>
+
+<script>
+
+const HUMOR_TIPS = [
+  "💡 Tip: Alex ran 847 interviews today. You're his favorite. (He says that to everyone.)",
+  "🤖 Fun fact: Alex was nervous in his first interview too. He crashed twice.",
+  "😄 Remember: 'I'm a perfectionist' is NOT a weakness. Alex has heard it 4,219 times.",
+  "🎯 Pro tip: STAR method works. S-Situation, T-Task, A-Action, R-Result. Not S-Sweat!",
+  "😅 Alex once interviewed a candidate who brought their cat. They got the job.",
+  "💼 Breathe. Alex's bark is worse than his byte. (He's a robot, get it?)",
+  "🌟 Confidence tip: You already passed the initial screening. You're already winning!",
+  "🤓 Alex grades on effort + substance. Big words don't impress him. Clear thinking does.",
+];
+
+const QUESTIONS = [
+  {
+    text:"Hello! I'm Alex, your AI interviewer for today — and yes, I do have a sense of humor, but I take interviews very seriously! Let's start easy: please tell me about yourself, your background, and what brought you to apply for this role. No pressure — just imagine we're having coffee. (Except I can't drink coffee. Robot problems.)",
+    cat:"Introduction", diff:"easy",
+    hint:"Keep it focused: education → key experience → why this role. Aim for 60–90 seconds if spoken."
+  },
+  {
+    text:"Great! Now — what would you say are your top three professional strengths? And please, no 'I work too hard' — give me real strengths with a quick real-world example for each. Alex's detector for generic answers is fully charged today.",
+    cat:"Strengths", diff:"easy",
+    hint:"Pick strengths relevant to the role. Back each one with a short concrete story: 'I'm detail-oriented — once I caught a bug that saved $40k in production.'"
+  },
+  {
+    text:"I like what I'm hearing so far! Tell me — why specifically THIS role at THIS company? What do you actually know about us? What genuinely excites you? (And if your answer is 'great culture and growth opportunities,' Alex will politely fall asleep.)",
+    cat:"Motivation", diff:"easy",
+    hint:"Research the company before the interview. Mention specific products, values, recent news, or aspects of the role that connect to your own goals."
+  },
+  {
+    text:"Alright, let's shift gears. I want you to walk me through a genuinely difficult problem or challenging situation you faced at work. Not a minor inconvenience — I mean a real challenge. What happened, what did YOU do, and what was the actual result?",
+    cat:"Problem Solving", diff:"mid",
+    hint:"Use STAR: Situation → Task → Action → Result. Be specific: what did YOU personally do? What was the measurable outcome?"
+  },
+  {
+    text:"Now the classic career vision question — but I want a real answer, not a rehearsed one. Where do you see yourself in 3–5 years? How does this role and company fit into that path? I'm checking if your ambitions and our trajectory are even in the same galaxy.",
+    cat:"Career Vision", diff:"mid",
+    hint:"Be realistic. Show that you've thought about growth in this field. Connect your long-term goals to what this specific company can offer you."
+  },
+  {
+    text:"Here's a real one: How do you handle working under significant pressure or very tight deadlines? Give me a recent, specific example. And please — 'I thrive under pressure' without an example is like saying you can swim without ever getting wet.",
+    cat:"Pressure & Resilience", diff:"mid",
+    hint:"Show your actual process: How do you prioritize? How do you communicate with your team? How do you maintain quality when time is short?"
+  },
+  {
+    text:"I'm going to ask you something that makes most candidates uncomfortable — and that's exactly the point. Tell me about your biggest professional failure or most serious mistake. What happened? What did it cost? What changed in you because of it? The answer reveals your character more than any success story.",
+    cat:"Failure & Growth", diff:"hard",
+    hint:"Be honest and specific. Don't sugarcoat it. The mistake itself matters less than your self-awareness, accountability, and what you genuinely learned and changed."
+  },
+  {
+    text:"Final question — and I want you to really sell me on this. Among all the candidates who applied for this role, why should YOU be the one we hire? Not 'I'm a hard worker' — give me the real, specific, honest case for why you and this opportunity are the right match. Make me remember you.",
+    cat:"Value Proposition", diff:"hard",
+    hint:"Synthesize your unique combination: specific skills + relevant experience + personality fit + what you'll bring that others won't. Be confident. This is your moment."
+  }
+];
+
+let S = {
+  name:'', role:'', photoURL:'',
+  qIndex:0, answers:[], scores:[],
+  totalQ: QUESTIONS.length,
+  talking:false, listening:false,
+  recognition:null, synth:window.speechSynthesis,
+  timerInterval:null, startTime:null,
+  talkInterval:null, blinkTimeout:null,
+  hintVisible:false, micActive:false,
+  ttsActive:false,
+};
+
+function handlePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    S.photoURL = e.target.result;
+    const prev = document.getElementById('photoPreview');
+    prev.innerHTML = `<img src="${S.photoURL}" alt="Your photo">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function startInterview() {
+  S.name = document.getElementById('inputName').value.trim();
+  S.role = document.getElementById('inputRole').value.trim();
+  if (!S.name || !S.role) { alert('Please enter your name and the role you\'re applying for.'); return; }
+
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('mainShell').style.display = 'flex';
+
+  document.getElementById('tbCandName').textContent = S.name;
+  document.title = `Interview — ${S.name}`;
+
+  // Set candidate info in sidebar
+  const candPhoto = document.getElementById('candPhotoWrap');
+  if (S.photoURL) {
+    candPhoto.innerHTML = `<img src="${S.photoURL}" alt="${S.name}">`;
+  }
+  document.getElementById('candNameLabel').textContent = S.name;
+  document.getElementById('candRoleLabel').textContent = S.role;
+
+  buildQDots();
+  S.startTime = Date.now();
+  S.timerInterval = setInterval(tickTimer, 1000);
+  setupBlink();
+  cycleHumorTips();
+
+  // Show typing then first question
+  showQuestion(0);
+}
+
+function cycleHumorTips() {
+  let idx = 0;
+  const el = document.getElementById('humorTipEl');
+  setInterval(() => {
+    idx = (idx + 1) % HUMOR_TIPS.length;
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.textContent = HUMOR_TIPS[idx];
+      el.style.opacity = '1';
+    }, 400);
+  }, 7000);
+  el.style.transition = 'opacity .4s';
+}
+
+function setupBlink() {
+  function doBlink() {
+    const ll = document.getElementById('leftLid2');
+    const rl = document.getElementById('rightLid2');
+    ll.setAttribute('ry','14'); rl.setAttribute('ry','14');
+    setTimeout(() => { ll.setAttribute('ry','1'); rl.setAttribute('ry','1'); }, 130);
+    S.blinkTimeout = setTimeout(doBlink, 2800 + Math.random()*4500);
+  }
+  S.blinkTimeout = setTimeout(doBlink, 2000);
+}
+
+function startTalking() {
+  if (S.talkInterval) clearInterval(S.talkInterval);
+  S.talking = true;
+  document.getElementById('speakRing').classList.add('active');
+  setStatus('speaking', 'Alex is speaking...');
+  const inner = document.getElementById('innerMouth2');
+  const teeth = document.getElementById('teethEl2');
+  const tongue = document.getElementById('tongueEl2');
+
+  S.talkInterval = setInterval(() => {
+    const open = Math.random() > 0.45;
+    if (open) {
+      const o = 4 + Math.random() * 10;
+      inner.setAttribute('ry', o.toFixed(1));
+      teeth.setAttribute('ry', (o * 0.52).toFixed(1));
+      tongue.setAttribute('ry', (o * 0.22).toFixed(1));
+    } else {
+      inner.setAttribute('ry','0');
+      teeth.setAttribute('ry','0');
+      tongue.setAttribute('ry','0');
+    }
+  }, 80 + Math.random()*50);
+}
+
+function stopTalking() {
+  S.talking = false;
+  document.getElementById('speakRing').classList.remove('active');
+  // IMPORTANT: Clear interval AND reset mouth to closed
+  if (S.talkInterval) {
+    clearInterval(S.talkInterval);
+    S.talkInterval = null;
+  }
+  // Force mouth completely closed
+  ['innerMouth2','teethEl2','tongueEl2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('ry','0');
+  });
+  setStatus('idle', 'Your turn — answer away!');
+  document.getElementById('answerBox').disabled = false;
+  document.getElementById('micBtn').disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function setStatus(state, text) {
+  const bar = document.getElementById('statusBar');
+  bar.className = 'status-bar ' + (state==='speaking'?'speaking':state==='listening'?'listening':'');
+  document.getElementById('statusText').textContent = text;
+}
+
+
+function speakText(text, onDone) {
+  if (!window.speechSynthesis) { if (onDone) onDone(); return; }
+  S.synth.cancel();
+  S.ttsActive = true;
+
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US';
+  utt.rate = 0.9;
+  utt.pitch = 1.05;
+  utt.volume = 1.0;
+
+  const voices = S.synth.getVoices();
+  const match = voices.find(v => v.lang.startsWith('en') && v.name.includes('Male')) ||
+                voices.find(v => v.lang.startsWith('en'));
+  if (match) utt.voice = match;
+
+  utt.onstart = () => startTalking();
+  utt.onend = () => {
+    S.ttsActive = false;
+    stopTalking();
+    if (onDone) onDone();
+  };
+  utt.onerror = () => {
+    S.ttsActive = false;
+    stopTalking();
+    if (onDone) onDone();
+  };
+
+  startTalking();
+  setTimeout(() => S.synth.speak(utt), 150);
+}
+
+function toggleMic() {
+  if (S.micActive) stopMic();
+  else startMic();
+}
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Speech recognition not supported. Please type your answer.'); return; }
+  S.recognition = new SR();
+  S.recognition.lang = 'en-US';
+  S.recognition.continuous = true;
+  S.recognition.interimResults = true;
+  S.recognition.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('answerBox').value = transcript;
+    onAnswerType();
+  };
+  S.recognition.onerror = () => stopMic();
+  S.recognition.onend = () => { if (S.micActive) S.recognition.start(); };
+  S.recognition.start();
+  S.micActive = true;
+  const btn = document.getElementById('micBtn');
+  btn.className = 'btn-mic active';
+  document.getElementById('micIcon').textContent = '⏹';
+  document.getElementById('micLabel').textContent = 'Stop';
+  setStatus('listening', 'Listening... speak now');
+}
+function stopMic() {
+  if (S.recognition) { S.recognition.onend = null; S.recognition.stop(); S.recognition = null; }
+  S.micActive = false;
+  const btn = document.getElementById('micBtn');
+  btn.className = 'btn-mic idle';
+  document.getElementById('micIcon').textContent = '🎙';
+  document.getElementById('micLabel').textContent = 'Speak';
+  setStatus('idle', 'Your turn — answer away!');
+}
+
+function buildQDots() {
+  const wrap = document.getElementById('qDots');
+  wrap.innerHTML = '';
+  QUESTIONS.forEach((q,i) => {
+    const d = document.createElement('div');
+    d.className = 'qdot';
+    d.id = `qdot-${i}`;
+    d.textContent = i+1;
+    wrap.appendChild(d);
+  });
+  document.getElementById('livAnswered').textContent = `0/${QUESTIONS.length}`;
+}
+
+function showQuestion(idx) {
+  S.qIndex = idx;
+  const q = QUESTIONS[idx];
+  S.hintVisible = false;
+
+  const d = q.diff;
+  document.getElementById('qCat').textContent = q.cat;
+  document.getElementById('diffPill').textContent = d==='easy'?'Easy':d==='mid'?'Intermediate':'Hard';
+  document.getElementById('diffPill').className = `diff-pill ${d}`;
+  document.getElementById('qHint').textContent = '💡 Hint: ' + q.hint;
+  document.getElementById('qHint').style.display = 'none';
+  document.getElementById('hintBtn').textContent = '💡 Hint';
+
+  // Phase tag
+  const pt = document.getElementById('phaseTag');
+  if (d==='easy') { pt.textContent='Phase: Warmup ☀️'; pt.className='phase-tag easy'; }
+  else if (d==='mid') { pt.textContent='Phase: Core 🎯'; pt.className='phase-tag mid'; }
+  else { pt.textContent='Phase: Challenge 🔥'; pt.className='phase-tag hard'; }
+
+  document.getElementById('seg-mid').classList.toggle('done', d!=='easy');
+  document.getElementById('seg-hard').classList.toggle('done', d==='hard');
+
+  
+  document.getElementById('answerBox').value = '';
+  document.getElementById('answerBox').disabled = true;
+  document.getElementById('micBtn').disabled = true;
+  document.getElementById('submitBtn').disabled = true;
+  onAnswerType();
+
+  
+  document.querySelectorAll('.qdot').forEach(el => el.classList.remove('current'));
+  const dotEl = document.getElementById(`qdot-${idx}`);
+  if (dotEl) dotEl.classList.add('current');
+
+  
+  const pct = (idx / S.totalQ) * 100;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `${idx} / ${S.totalQ}`;
+
+  document.getElementById('qText').innerHTML = `
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+
+ 
+  const bubble = document.getElementById('questionBubble');
+  bubble.style.opacity = '0';
+  bubble.style.transform = 'translateY(10px)';
+  bubble.style.transition = '';
+  setTimeout(() => {
+    bubble.style.transition = 'all .35s ease';
+    bubble.style.opacity = '1';
+    bubble.style.transform = 'translateY(0)';
+  }, 50);
+
+
+  const typingDelay = 800 + q.text.length * 2;
+  setTimeout(() => {
+    document.getElementById('qText').textContent = q.text;
+    // Then speak it
+    setTimeout(() => speakText(q.text), 300);
+  }, Math.min(typingDelay, 2000));
+}
+
+function onAnswerType() {
+  const val = document.getElementById('answerBox').value;
+  const words = val.trim().split(/\s+/).filter(w=>w).length;
+  document.getElementById('wordCountEl').textContent = words + ' word' + (words!==1?'s':'');
+}
+
+function toggleHint() {
+  S.hintVisible = !S.hintVisible;
+  document.getElementById('qHint').style.display = S.hintVisible ? 'block' : 'none';
+  document.getElementById('hintBtn').textContent = S.hintVisible ? '🙈 Hide' : '💡 Hint';
+}
+
+function submitAnswer() {
+  const ans = document.getElementById('answerBox').value.trim();
+  if (!ans) {
+    document.getElementById('answerBox').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('answerBox').style.borderColor = '', 1200);
+    return;
+  }
+  stopMic();
+  getAIFeedback(ans, false);
+}
+
+function skipQuestion() {
+  stopMic();
+  recordAnswer('[Skipped]', 0, '', true);
+}
+
+async function getAIFeedback(ans, skipped) {
+  if (skipped) { recordAnswer(ans, 0, '', true); return; }
+
+  const q = QUESTIONS[S.qIndex];
+  showLoading(`Alex is evaluating your answer...`);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `You are Alex, a professional but warm and slightly humorous AI interviewer evaluating a candidate's answer in an English job interview.
+
+CANDIDATE: ${S.name}
+ROLE APPLIED: ${S.role}
+QUESTION (${q.diff} level, ${q.cat}): ${q.text}
+CANDIDATE'S ANSWER: ${ans}
+
+Evaluate this answer and respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "score": <integer 0-100>,
+  "feedback": "<2-3 sentences of specific, constructive feedback mentioning what was good, what was missing, and one improvement tip. Be warm but honest. You can add very mild humor if appropriate. Keep under 80 words.>",
+  "verdict": "<one of: Excellent, Good, Fair, Needs Work>"
+}`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    hideLoading();
+
+    let score = 50, feedback = "Good effort! Keep developing your answer.", verdict = "Fair";
+    try {
+      const text = data.content.map(i => i.text || '').join('').replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(text);
+      score = Math.min(100, Math.max(0, parseInt(parsed.score) || 50));
+      feedback = parsed.feedback || feedback;
+      verdict = parsed.verdict || verdict;
+    } catch(e) { /* use defaults */ }
+
+    recordAnswer(ans, score, feedback, false);
+
+  } catch (err) {
+    hideLoading();
+    // Fallback to local scoring
+    const score = computeLocalScore(ans, q.diff);
+    recordAnswer(ans, score, "Great answer! Keep being specific and structured.", false);
+  }
+}
+
+function computeLocalScore(ans, diff) {
+  const words = ans.trim().split(/\s+/).filter(w=>w).length;
+  const hasEx = /\b(for example|for instance|when i|i led|i built|i managed|i created|as a result)\b/i.test(ans);
+  const hasStruct = /\b(first|second|then|next|finally|therefore|because|however)\b/i.test(ans);
+  const hasMeasure = /\b(\d+%|\d+ percent|\d+ years?|\d+ months?|\$\d+|\d+ people|increased|decreased|improved)\b/i.test(ans);
+  let base = Math.min(100, words * 1.6);
+  if (words < 15) base *= 0.4;
+  if (hasEx) base += 12;
+  if (hasStruct) base += 8;
+  if (hasMeasure) base += 14;
+  const mult = {easy:0.88, mid:1.0, hard:1.12}[diff] || 1;
+  return Math.min(100, Math.round(base * mult));
+}
+
+function showLoading(text) {
+  document.getElementById('loadingText').textContent = text || 'Alex is thinking...';
+  document.getElementById('aiLoading').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('aiLoading').classList.remove('show');
+}
+
+function recordAnswer(ans, score, feedback, skipped) {
+  const q = QUESTIONS[S.qIndex];
+  S.answers.push({ q, ans, score, feedback, skipped });
+  S.scores.push(score);
+
+  addHistoryItem(S.qIndex, q, ans, skipped);
+  markDot(S.qIndex, q.diff, skipped);
+  updateLiveScore();
+
+  S.qIndex++;
+  document.getElementById('livAnswered').textContent = `${S.answers.filter(a=>!a.skipped).length}/${S.totalQ}`;
+
+  if (S.qIndex >= S.totalQ) {
+    // Alex says goodbye before showing results
+    const goodbyes = [
+      "That was a great session! Let me calculate your results.",
+      "Excellent effort! Give me a moment to put together your report.",
+      "Well done! I enjoyed interviewing you. Let me finalize your score now."
+    ];
+    const msg = goodbyes[Math.floor(Math.random()*goodbyes.length)];
+    speakText(msg, () => setTimeout(endInterview, 800));
+  } else {
+    // Alex gives a brief reaction before next question
+    const reactions = [
+      "Got it! Moving on to the next question.",
+      "Interesting. Let's continue.",
+      "Good — here's your next question.",
+      "Noted! Let's keep going.",
+      "Alright, next one coming up!"
+    ];
+    const reaction = reactions[Math.floor(Math.random()*reactions.length)];
+    speakText(reaction, () => setTimeout(() => showQuestion(S.qIndex), 600));
+  }
+}
+
+
+function addHistoryItem(idx, q, ans, skipped) {
+  document.getElementById('histWrap').style.display = 'block';
+  const list = document.getElementById('histItems');
+  const item = document.createElement('div');
+  item.className = 'hist-item';
+  item.innerHTML = `
+    <div><div class="hist-badge ${q.diff}">Q${idx+1}</div></div>
+    <div>
+      <div class="hist-q">${q.cat} — ${q.diff.toUpperCase()}</div>
+      <div class="hist-a">${skipped ? '<em style="color:var(--text3)">Skipped</em>' : ans.length > 180 ? ans.substring(0,180)+'…' : ans}</div>
+    </div>`;
+  list.appendChild(item);
+}
+
+function markDot(idx, diff, skipped) {
+  const dot = document.getElementById(`qdot-${idx}`);
+  if (!dot) return;
+  dot.classList.remove('current');
+  if (skipped) dot.classList.add('skip');
+  else dot.classList.add(`done-${diff}`);
+}
+
+function updateLiveScore() {
+  const realScores = S.scores.filter((_,i) => !S.answers[i]?.skipped);
+  if (!realScores.length) return;
+  const avg = Math.round(realScores.reduce((a,b)=>a+b,0)/realScores.length);
+  document.getElementById('livScore').textContent = avg;
+}
+
+function tickTimer() {
+  const elapsed = Math.floor((Date.now() - S.startTime)/1000);
+  const m = String(Math.floor(elapsed/60)).padStart(2,'0');
+  const sec = String(elapsed%60).padStart(2,'0');
+  const el = document.getElementById('timerEl');
+  el.textContent = `${m}:${sec}`;
+  el.className = elapsed > 2400 ? 'timer urgent' : 'timer';
+}
+
+
+async function endInterview() {
+  clearInterval(S.timerInterval);
+  if (S.blinkTimeout) clearTimeout(S.blinkTimeout);
+  S.synth.cancel();
+
+  const realAnswers = S.answers.filter(a => !a.skipped);
+  const realScores = realAnswers.map(a => a.score);
+  const avgScore = realScores.length ? Math.round(realScores.reduce((a,b)=>a+b,0)/realScores.length) : 0;
+  const answered = realAnswers.length;
+  const elapsed = Math.floor((Date.now()-S.startTime)/1000);
+
+  showLoading('Alex is generating your final report...');
+
+  let finalNote = '', verdictHumor = '';
+  try {
+    const summaryAnswers = S.answers.map((a,i) =>
+      `Q${i+1} [${a.q.diff}]: ${a.q.cat} — Answer: ${a.skipped?'Skipped':a.ans.substring(0,200)}`
+    ).join('\n');
+
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `You are Alex, a professional but warm AI interviewer. Write a hiring recommendation for ${S.name} applying for ${S.role}. Average score: ${avgScore}/100. Questions answered: ${answered}/${S.answers.length}.
+
+Summary:
+${summaryAnswers}
+
+Respond ONLY with valid JSON:
+{
+  "verdict": "<one of: Strong Hire, Lean Hire, Hold - Second Interview, Lean No Hire, No Hire>",
+  "stars": <1-5 integer>,
+  "note": "<3-4 sentences: be professional, specific about their strengths/gaps, and end with a touch of warmth or mild Alex-style humor. Under 100 words.>",
+  "humorClosing": "<One funny/warm sentence from Alex as a personal sign-off>"
+}`
+        }]
+      })
+    });
+    const d = await resp.json();
+    const text = d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(text);
+    hideLoading();
+    showResults(avgScore, answered, elapsed, parsed.verdict, parsed.stars, parsed.note, parsed.humorClosing);
+  } catch(e) {
+    hideLoading();
+    let verdict, stars, note;
+    if (avgScore>=80){verdict='Strong Hire';stars=5;note='Outstanding performance. Highly recommended.'}
+    else if (avgScore>=65){verdict='Lean Hire';stars=4;note='Solid performance with clear strengths. Recommended.'}
+    else if (avgScore>=50){verdict='Hold — Second Interview';stars=3;note='Mixed performance. Schedule a follow-up interview.'}
+    else if (avgScore>=35){verdict='Lean No Hire';stars=2;note='Below expectations. Significant gaps identified.'}
+    else{verdict='No Hire';stars=1;note='Does not meet baseline requirements.'}
+    showResults(avgScore, answered, elapsed, verdict, stars, note, "Thanks for the interview — may your future be bright! 🤖");
+  }
+}
+
+function showResults(avgScore, answered, elapsed, verdict, stars, note, humor) {
+  document.getElementById('mainShell').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'flex';
+
+  document.getElementById('resName').textContent = S.name;
+
+  const mins = Math.floor(elapsed/60), secs = elapsed%60;
+  document.getElementById('resGrid').innerHTML = `
+    <div class="result-card">
+      <div class="rc-label">Overall Score</div>
+      <div class="rc-val">${avgScore}</div>
+      <div class="rc-sub">out of 100</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-label">Questions Answered</div>
+      <div class="rc-val" style="color:var(--green)">${answered}</div>
+      <div class="rc-sub">of ${S.answers.length} total</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-label">Time Taken</div>
+      <div class="rc-val" style="font-size:22px">${mins}m ${secs}s</div>
+      <div class="rc-sub">total duration</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-label">Role Applied</div>
+      <div class="rc-val" style="font-size:17px;line-height:1.3">${S.role}</div>
+      <div class="rc-sub">English session</div>
+    </div>
+  `;
+
+  const verdictColor = stars>=4?'var(--green)':stars===3?'var(--amber)':'var(--red)';
+  document.getElementById('verdictRec').textContent = verdict;
+  document.getElementById('verdictRec').style.color = verdictColor;
+  document.getElementById('verdictStars').textContent = '★'.repeat(stars) + '☆'.repeat(5-stars);
+  document.getElementById('verdictNote').innerHTML = `${note}<br><br><em style="color:var(--text3);font-size:13px">— ${humor || 'Alex says: Good luck out there! 🤖'}</em>`;
+
+
+  const arEl = document.getElementById('arItems');
+  arEl.innerHTML = '';
+  S.answers.forEach((a,i) => {
+    const item = document.createElement('div');
+    item.className = 'ar-item';
+    item.innerHTML = `
+      <div class="ar-q"><strong>Q${i+1} [${a.q.diff.toUpperCase()}] — ${a.q.cat}:</strong> ${a.q.text}</div>
+      <div class="ar-a">${a.skipped ? '<em style="color:var(--text3)">Skipped</em>' : a.ans}</div>
+      ${!a.skipped ? `<div class="ar-score">Score: ${a.score}/100</div>` : ''}
+      ${a.feedback && !a.skipped ? `<div class="ar-feedback">💬 Alex: ${a.feedback}</div>` : ''}
+    `;
+    arEl.appendChild(item);
+  });
+}
+
+
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+  setTimeout(() => window.speechSynthesis.getVoices(), 500);
+}
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    const btn = document.getElementById('submitBtn');
+    if (btn && !btn.disabled) submitAnswer();
+  }
+});
+</script>
+</body>
+</html>

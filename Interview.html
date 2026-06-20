@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0c14;--bg2:#111420;--bg3:#181c2e;--surface:#1e2338;--surface2:#242840;
+--border:rgba(120,140,255,0.12);--border2:rgba(120,140,255,0.22);
+--accent:#6C63FF;--accent2:#8B85FF;--accentd:rgba(108,99,255,0.15);
+--green:#22c55e;--greend:rgba(34,197,94,0.12);
+--amber:#f59e0b;--amberd:rgba(245,158,11,0.12);
+--red:#ef4444;--redd:rgba(239,68,68,0.12);
+--gold:#fbbf24;--pink:#ec4899;--cyan:#06b6d4;
+--text:#e8eaf6;--text2:#9aa0c4;--text3:#555d8a;
+--shadow:0 4px 30px rgba(0,0,0,0.4);
+--r:10px;--r2:16px;--r3:24px;
+}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+.screen{display:none}
+.screen.active{display:flex}
+
+/* ━━━ AUTH SCREEN ━━━ */
+#authScreen{
+  min-height:100vh;align-items:center;justify-content:center;
+  background:var(--bg);padding:2rem;position:relative;overflow:hidden;flex-direction:column;
+}
+.auth-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(108,99,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(108,99,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.auth-glow{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(108,99,255,0.12) 0%,transparent 70%);
+  top:-200px;right:-200px;pointer-events:none;
+}
+.auth-glow2{
+  position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(6,182,212,0.08) 0%,transparent 70%);
+  bottom:-100px;left:-100px;pointer-events:none;
+}
+.auth-card{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);
+  padding:2.5rem;width:100%;max-width:440px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.03);
+  position:relative;z-index:1;
+  animation:floatIn .5s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes floatIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.auth-logo{
+  display:flex;align-items:center;gap:10px;margin-bottom:2rem;
+}
+.logo-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white;
+  box-shadow:0 0 20px rgba(108,99,255,0.4);
+}
+.logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.02em}
+.logo-text span{color:var(--accent)}
+.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:2rem}
+.auth-tab{
+  flex:1;padding:8px;text-align:center;border-radius:7px;
+  font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .2s;
+}
+.auth-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+.auth-sub{font-size:14px;color:var(--text2);margin-bottom:1.5rem;line-height:1.5}
+.fl{display:flex;flex-direction:column;gap:12px}
+.fg label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px}
+.fi{
+  width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .2s;
+}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,0.15)}
+.fi::placeholder{color:var(--text3)}
+.role-select{display:flex;gap:8px;margin-top:4px}
+.role-opt{
+  flex:1;padding:10px 8px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg3);text-align:center;cursor:pointer;transition:all .2s;
+  font-size:12px;font-weight:600;color:var(--text2);
+}
+.role-opt.active{border-color:var(--accent);background:var(--accentd);color:var(--accent)}
+.btn-auth{
+  width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 20px rgba(108,99,255,0.35);margin-top:4px;
+}
+.btn-auth:hover{background:#5750e8;transform:translateY(-1px);box-shadow:0 6px 28px rgba(108,99,255,0.45)}
+.auth-divider{text-align:center;font-size:12px;color:var(--text3);margin:8px 0}
+.social-btns{display:flex;gap:8px}
+.btn-social{
+  flex:1;padding:10px;background:var(--surface);border:1px solid var(--border2);
+  border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;
+  transition:all .2s;text-align:center;
+}
+.btn-social:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ━━━ DASHBOARD ━━━ */
+#dashScreen{min-height:100vh;flex-direction:column;background:var(--bg)}
+.topnav{
+  height:60px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 2rem;gap:16px;position:sticky;top:0;z-index:100;
+}
+.nav-links{display:flex;gap:4px;margin:0 auto}
+.nav-link{
+  padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text2);
+  cursor:pointer;transition:all .2s;
+}
+.nav-link:hover,.nav-link.active{background:var(--accentd);color:var(--accent)}
+.nav-user{display:flex;align-items:center;gap:10px}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:white;
+}
+.dash-content{flex:1;padding:2rem;max-width:1200px;margin:0 auto;width:100%}
+.dash-header{margin-bottom:2rem}
+.dash-greeting{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-.02em}
+.dash-sub{font-size:15px;color:var(--text2);margin-top:4px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:2rem}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem;position:relative;overflow:hidden;
+}
+.stat-card::after{
+  content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;
+  opacity:.08;
+}
+.stat-card.blue::after{background:var(--accent)}
+.stat-card.green::after{background:var(--green)}
+.stat-card.amber::after{background:var(--amber)}
+.stat-card.pink::after{background:var(--pink)}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.stat-val{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--text)}
+.stat-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.industry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
+.ind-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;
+}
+.ind-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.ind-icon{font-size:28px;margin-bottom:10px}
+.ind-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ind-desc{font-size:12px;color:var(--text2);line-height:1.4}
+.ind-badge{
+  position:absolute;top:10px;right:10px;
+  padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;
+}
+.ind-badge.hot{background:var(--redd);color:var(--red)}
+.ind-badge.new{background:var(--greend);color:var(--green)}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);
+  margin-bottom:1rem;letter-spacing:-.01em;
+}
+.history-list{display:flex;flex-direction:column;gap:10px;margin-bottom:2rem}
+.hist-row{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;
+}
+.hist-role{font-size:14px;font-weight:600;color:var(--text)}
+.hist-date{font-size:12px;color:var(--text3);margin-left:auto}
+.score-pill{
+  padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;
+}
+.score-pill.high{background:var(--greend);color:var(--green)}
+.score-pill.mid{background:var(--amberd);color:var(--amber)}
+.score-pill.low{background:var(--redd);color:var(--red)}
+
+/* Recruiter panel */
+.recruiter-dash{display:none;flex-direction:column;gap:1.5rem}
+.recruiter-dash.active{display:flex}
+.cand-table{width:100%;border-collapse:collapse}
+.cand-table th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.cand-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2)}
+.cand-table tr:hover td{background:var(--surface)}
+.cand-name-cell{font-weight:600;color:var(--text)}
+
+/* ━━━ INTERVIEW SCREEN ━━━ */
+#interviewScreen{min-height:100vh;flex-direction:column;background:var(--bg)}
+.int-topbar{
+  height:58px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 1.5rem;gap:12px;position:sticky;top:0;z-index:100;
+}
+.phase-badge{
+  padding:4px 14px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+}
+.phase-badge.warm{background:var(--greend);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.phase-badge.core{background:var(--amberd);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
+.phase-badge.hard{background:var(--redd);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.int-timer{
+  font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--text2);
+  background:var(--surface);padding:4px 12px;border-radius:8px;border:1px solid var(--border);margin-left:auto;
+}
+.int-timer.urgent{color:var(--red);border-color:rgba(239,68,68,.3);background:var(--redd)}
+.int-layout{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* AVATAR COLUMN */
+.av-col{
+  width:300px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;padding:1.25rem;gap:12px;
+  overflow-y:auto;
+}
+.cand-card{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:10px;display:flex;align-items:center;gap:10px;
+}
+.cand-av{
+  width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:white;flex-shrink:0;overflow:hidden;
+}
+.cand-av img{width:100%;height:100%;object-fit:cover}
+.cand-info-name{font-size:13px;font-weight:700;color:var(--text)}
+.cand-info-role{font-size:11px;color:var(--text3)}
+
+/* Alex avatar area */
+.alex-scene{
+  width:100%;max-width:220px;position:relative;
+}
+.speak-aura{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid var(--accent);opacity:0;transition:opacity .3s;
+  box-shadow:0 0 0 0 rgba(108,99,255,0);
+}
+.speak-aura.on{opacity:1;animation:auraPulse 1.2s ease-in-out infinite}
+@keyframes auraPulse{0%,100%{box-shadow:0 0 0 0 rgba(108,99,255,.3)}50%{box-shadow:0 0 0 16px rgba(108,99,255,0)}}
+#alexAvatar{width:100%;display:block;filter:drop-shadow(0 10px 30px rgba(108,99,255,0.25))}
+.alex-name-tag{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--accent);text-align:center}
+.alex-role-tag{font-size:11px;color:var(--text3);text-align:center}
+.status-strip{
+  width:100%;display:flex;align-items:center;gap:8px;padding:8px 12px;
+  border-radius:99px;border:1px solid var(--border);background:var(--surface);
+  font-size:12px;font-weight:600;color:var(--text2);transition:all .3s;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:all .3s}
+.status-strip.spk{border-color:var(--accent);color:var(--accent);background:var(--accentd)}
+.status-strip.spk .status-dot{background:var(--accent);animation:dotBounce .5s ease-in-out infinite alternate}
+.status-strip.lst{border-color:var(--green);color:var(--green);background:var(--greend)}
+.status-strip.lst .status-dot{background:var(--green);animation:dotBounce .4s ease-in-out infinite alternate}
+@keyframes dotBounce{from{transform:scale(1)}to{transform:scale(2);opacity:.4}}
+.qdots-row{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.qdot{
+  width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;
+  color:var(--text3);transition:all .3s;cursor:default;
+}
+.qdot.cur{background:var(--accent);color:white;border-color:var(--accent);transform:scale(1.1)}
+.qdot.ok-easy{background:var(--greend);border-color:var(--green);color:var(--green)}
+.qdot.ok-mid{background:var(--amberd);border-color:var(--amber);color:var(--amber)}
+.qdot.ok-hard{background:var(--redd);border-color:var(--red);color:var(--red)}
+.qdot.skip{opacity:.35}
+.live-score-box{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:12px 14px;display:flex;align-items:center;
+}
+.lsb-val{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--accent)}
+.lsb-meta{margin-left:auto;text-align:right}
+.lsb-meta-top{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.lsb-meta-val{font-size:14px;font-weight:700;color:var(--text2)}
+.humor-strip{
+  width:100%;padding:8px 12px;border-radius:var(--r);background:var(--amberd);
+  border:1px solid rgba(245,158,11,.2);font-size:11px;color:var(--amber);font-style:italic;
+  text-align:center;line-height:1.4;transition:opacity .3s;
+}
+
+/* INTERVIEW MAIN */
+.int-main{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:1.5rem 2rem}
+.alex-bubble{
+  display:flex;gap:12px;margin-bottom:1.25rem;
+  animation:slideUp .35s cubic-bezier(.22,.68,0,1.1) both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ab-avatar{
+  width:38px;height:38px;border-radius:50%;background:var(--accentd);border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:4px;
+}
+.ab-body{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:4px 16px 16px 16px;
+  padding:14px 18px;max-width:94%;box-shadow:var(--shadow);
+}
+.ab-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ab-name{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.03em}
+.cat-tag{
+  padding:2px 9px;border-radius:99px;font-size:10px;font-weight:700;
+  background:var(--accentd);color:var(--accent);border:1px solid rgba(108,99,255,.25);
+}
+.diff-tag{
+  margin-left:auto;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+}
+.diff-tag.easy{background:var(--greend);color:var(--green)}
+.diff-tag.mid{background:var(--amberd);color:var(--amber)}
+.diff-tag.hard{background:var(--redd);color:var(--red)}
+.q-body{font-size:15px;line-height:1.7;color:var(--text);font-weight:400}
+.hint-box{
+  margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--surface);
+  border-left:3px solid var(--accent);font-size:12px;color:var(--text2);
+  display:none;font-style:italic;
+}
+.typing-dots{display:flex;gap:5px;align-items:center;padding:4px 0}
+.typing-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--text3);
+  animation:tdBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes tdBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+
+/* Answer zone */
+.ans-zone{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);
+}
+.ans-zone-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;
+}
+textarea#ansBox{
+  width:100%;min-height:120px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.7;
+  resize:vertical;outline:none;transition:border-color .2s;font-weight:400;
+}
+textarea#ansBox:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+textarea#ansBox::placeholder{color:var(--text3)}
+textarea#ansBox:disabled{opacity:.45;cursor:not-allowed}
+.btn-row2{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.ibtn{
+  padding:10px 18px;border-radius:var(--r);font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;border:1px solid;transition:all .18s;
+}
+.ibtn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 3px 12px rgba(108,99,255,.3)}
+.ibtn-primary:hover{background:#5750e8;transform:translateY(-1px)}
+.ibtn-primary:disabled{background:var(--surface);color:var(--text3);border-color:var(--border);cursor:not-allowed;transform:none;box-shadow:none}
+.ibtn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}
+.ibtn-ghost:hover{background:var(--surface);color:var(--text)}
+.ibtn-mic{
+  padding:10px 16px;border-radius:var(--r);border:1px solid;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  display:flex;align-items:center;gap:6px;transition:all .2s;
+}
+.ibtn-mic.idle{background:var(--surface);border-color:var(--border2);color:var(--text2)}
+.ibtn-mic.idle:hover{border-color:var(--accent);color:var(--accent)}
+.ibtn-mic.rec{background:var(--redd);border-color:var(--red);color:var(--red);animation:micGlow .8s ease-in-out infinite alternate}
+@keyframes micGlow{from{box-shadow:0 0 0 0 rgba(239,68,68,.2)}to{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
+.skip-lnk{margin-left:auto;font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.skip-lnk:hover{color:var(--text2)}
+
+/* Emotion badge */
+.emotion-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 12px;
+  border-radius:99px;font-size:11px;font-weight:700;border:1px solid;
+  transition:all .4s;
+}
+
+/* Prev answers */
+.prev-wrap{margin-top:1rem}
+.prev-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.prev-item{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr;gap:0 12px;
+  animation:slideUp .3s ease both;
+}
+.prev-badge{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;height:fit-content;margin-top:2px}
+.prev-badge.easy{background:var(--greend);color:var(--green)}
+.prev-badge.mid{background:var(--amberd);color:var(--amber)}
+.prev-badge.hard{background:var(--redd);color:var(--red)}
+.prev-q{font-size:12px;color:var(--text2);margin-bottom:4px}
+.prev-a{font-size:13px;color:var(--text);line-height:1.5}
+.prev-score{font-size:11px;font-weight:700;color:var(--accent);margin-top:4px}
+
+/* Bottom bar */
+.int-bottom{
+  background:var(--bg2);border-top:1px solid var(--border);padding:.85rem 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.prog-segs{display:flex;gap:4px}
+.seg{width:34px;height:5px;border-radius:99px;opacity:.2;transition:opacity .4s}
+.seg.on{opacity:1}
+.seg.e{background:var(--green)}.seg.m{background:var(--amber)}.seg.h{background:var(--red)}
+.prog-track{flex:1;height:5px;background:var(--surface);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:99px;transition:width .5s ease}
+.prog-lbl{font-size:12px;color:var(--text3);white-space:nowrap;font-weight:600}
+
+/* ━━━ RESULTS ━━━ */
+#resultsScreen{
+  min-height:100vh;flex-direction:column;align-items:center;
+  background:var(--bg);padding:3rem 2rem;gap:1.75rem;
+}
+.res-header{text-align:center}
+.res-badge{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+  background:var(--greend);border:2px solid var(--green);
+  box-shadow:0 0 0 10px rgba(34,197,94,0.08);
+}
+.res-name{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.02em}
+.res-sub{font-size:16px;color:var(--text2);margin-top:6px;font-style:italic}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;width:100%;max-width:760px}
+.res-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem}
+.rc-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.rc-val{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--accent)}
+.rc-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.verdict-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:1.75rem;width:100%;max-width:760px}
+.v-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.v-rec{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.v-stars{font-size:24px;letter-spacing:4px;color:var(--gold);margin-bottom:12px}
+.v-note{font-size:14px;color:var(--text2);line-height:1.65}
+.ar-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.ar-q{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;line-height:1.4}
+.ar-a{font-size:13px;color:var(--text);line-height:1.6}
+.ar-sc{font-size:11px;font-weight:800;color:var(--accent);margin-top:5px}
+.ar-fb{font-size:12px;color:var(--text2);margin-top:5px;font-style:italic;border-top:1px solid var(--border);padding-top:6px;line-height:1.5}
+.btn-restart{
+  padding:13px 36px;background:var(--accent);color:white;border:none;border-radius:var(--r);
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 20px rgba(108,99,255,.35);
+}
+.btn-restart:hover{background:#5750e8;transform:translateY(-1px)}
+
+/* Loading overlay */
+.ai-loader{
+  display:none;position:fixed;inset:0;background:rgba(10,12,20,0.88);
+  backdrop-filter:blur(10px);z-index:999;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;
+}
+.ai-loader.on{display:flex}
+.loader-ring{
+  width:48px;height:48px;border:3px solid var(--border2);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .75s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-txt{font-size:14px;font-weight:600;color:var(--text2)}
+
+/* Profile modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.on{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:1.5rem}
+.modal-close{float:right;cursor:pointer;color:var(--text3);font-size:20px;line-height:1}
+.profile-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.profile-av-big{
+  width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:white;
+  flex-shrink:0;overflow:hidden;cursor:pointer;border:2px solid var(--accent);
+}
+.profile-av-big img{width:100%;height:100%;object-fit:cover}
+.skill-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.skill-chip{
+  padding:4px 12px;border-radius:99px;background:var(--accentd);
+  color:var(--accent);border:1px solid rgba(108,99,255,.25);font-size:12px;font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="ai-loader" id="aiLoader">
+  <div class="loader-ring"></div>
+  <div class="loader-txt" id="loaderTxt">Alex is thinking...</div>
+</div>
+
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeProfile()">&#x2715;</span>
+    <div class="modal-title">My Profile</div>
+    <div class="profile-row">
+      <div class="profile-av-big" id="profileAvBig" onclick="document.getElementById('profilePhotoInput').click()">?</div>
+      <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="handleProfilePhoto(this)">
+      <div>
+        <div id="profileFullName" style="font-size:18px;font-weight:700;color:var(--text)"></div>
+        <div id="profileEmail" style="font-size:13px;color:var(--text2);margin-top:2px"></div>
+        <div id="profileRoleTag" style="margin-top:6px"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div class="prev-title">Skills</div>
+      <div class="skill-chips" id="profileSkills"></div>
+    </div>
+    <div>
+      <div class="prev-title">Interview History</div>
+      <div id="profileHistory" style="font-size:13px;color:var(--text2)">No interviews yet.</div>
+    </div>
+    <div style="margin-top:1.5rem">
+      <div class="fl">
+        <div class="fg"><label>Add Skills (comma-separated)</label><input class="fi" id="skillInput" placeholder="e.g. React, Python, Leadership"></div>
+        <button class="btn-auth" onclick="saveSkills()" style="margin-top:0">Save Skills</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AUTH SCREEN ═══ -->
+<div id="authScreen" class="screen active">
+  <div class="auth-grid"></div>
+  <div class="auth-glow"></div>
+  <div class="auth-glow2"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-mark">H</div>
+      <div class="logo-text">Hire<span>AI</span> Pro</div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</div>
+      <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</div>
+    </div>
+    <div id="loginForm">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to continue your interview journey with Alex.</div>
+      <div class="fl">
+        <div class="fg"><label>Email</label><input class="fi" id="loginEmail" type="email" placeholder="you@company.com"></div>
+        <div class="fg"><label>Password</label><input class="fi" id="loginPass" type="password" placeholder="••••••••"></div>
+        <button class="btn-auth" onclick="doLogin()">Sign In</button>
+      </div>
+      <div class="auth-divider">or continue as</div>
+      <div class="social-btns">
+        <div class="btn-social" onclick="demoLogin('candidate')">👤 Demo Candidate</div>
+        <div class="btn-social" onclick="demoLogin('recruiter')">🏢 Demo Recruiter</div>
+      </div>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="auth-title">Create account</div>
+      <div class="auth-sub">Join HireAI Pro. Free forever for candidates.</div>
+      <div class="fl">
+        <div class="fg"><label>Full Name</label><input class="fi" id="regName" type="text" placeholder="e.g. Rahim Ahmed"></div>
+        <div class="fg"><label>Email</label><input class="fi" id="regEmail" type="email" placeholder="you@company.com"></div>
+        <div class="fg"><label>Password</label><input class="fi" id="regPass" type="password" placeholder="Min 6 characters"></div>
+        <div class="fg">
+          <label>I am a</label>
+          <div class="role-select">
+            <div class="role-opt active" id="roleCandidate" onclick="pickRole('candidate')">👤 Candidate</div>
+            <div class="role-opt" id="roleRecruiter" onclick="pickRole('recruiter')">🏢 Recruiter</div>
+          </div>
+        </div>
+        <button class="btn-auth" onclick="doRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashScreen" class="screen">
+  <nav class="topnav">
+    <div class="auth-logo" style="margin-bottom:0;cursor:pointer" onclick="showDash()">
+      <div class="logo-mark" style="width:30px;height:30px;font-size:13px">H</div>
+      <div class="logo-text" style="font-size:16px">Hire<span>AI</span></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link active" onclick="switchDashTab('home')">Dashboard</div>
+      <div class="nav-link" id="navRecruiter" onclick="switchDashTab('recruiter')" style="display:none">Recruiter</div>
+    </div>
+    <div class="nav-user">
+      <div style="font-size:13px;font-weight:600;color:var(--text2)" id="navUserName"></div>
+      <div class="nav-avatar" id="navAvatar" onclick="openProfile()" style="cursor:pointer"></div>
+    </div>
+  </nav>
+  <div class="dash-content">
+    <div class="dash-header">
+      <div class="dash-greeting" id="dashGreeting">Hello! 👋</div>
+      <div class="dash-sub" id="dashSub">Ready to practice? Choose an industry below.</div>
+    </div>
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card blue"><div class="stat-label">Total Interviews</div><div class="stat-val" id="statTotal">0</div><div class="stat-sub">All time</div></div>
+      <div class="stat-card green"><div class="stat-label">Best Score</div><div class="stat-val" id="statBest">—</div><div class="stat-sub">Out of 100</div></div>
+      <div class="stat-card amber"><div class="stat-label">Avg Score</div><div class="stat-val" id="statAvg">—</div><div class="stat-sub">All sessions</div></div>
+      <div class="stat-card pink"><div class="stat-label">Questions</div><div class="stat-val" id="statQ">0</div><div class="stat-sub">Answered total</div></div>
+    </div>
+
+    <!-- Candidate view -->
+    <div id="candidateView">
+      <div class="section-title">Choose Industry</div>
+      <div class="industry-grid" id="industryGrid"></div>
+      <div class="section-title" style="margin-top:1.5rem">Recent Interviews</div>
+      <div class="history-list" id="histList"><div style="font-size:14px;color:var(--text3);padding:1rem 0">No interviews yet. Start one above!</div></div>
+    </div>
+
+    <!-- Recruiter view -->
+    <div class="recruiter-dash" id="recruiterView">
+      <div class="section-title">Candidate Pipeline</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden">
+        <table class="cand-table">
+          <thead><tr><th>Candidate</th><th>Role</th><th>Score</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="recruiterTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INTERVIEW SCREEN ═══ -->
+<div id="interviewScreen" class="screen">
+  <header class="int-topbar">
+    <div class="auth-logo" style="margin-bottom:0">
+      <div class="logo-mark" style="width:26px;height:26px;font-size:11px">H</div>
+      <div class="logo-text" style="font-size:14px">Hire<span>AI</span></div>
+    </div>
+    <div style="width:1px;height:20px;background:var(--border)"></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)" id="intIndustryLabel">Interview</div>
+    <div class="phase-badge warm" id="phaseBadge">Phase: Warmup</div>
+    <div class="int-timer" id="intTimer">00:00</div>
+    <button class="ibtn ibtn-ghost" style="margin-left:8px;padding:6px 12px;font-size:12px" onclick="endInterview()">End Session</button>
+  </header>
+  <div class="int-layout">
+    <!-- Avatar col -->
+    <div class="av-col">
+      <div class="cand-card">
+        <div class="cand-av" id="intCandAv"></div>
+        <div>
+          <div class="cand-info-name" id="intCandName">—</div>
+          <div class="cand-info-role" id="intCandRole">—</div>
+        </div>
+      </div>
+      <div class="alex-scene">
+        <div class="speak-aura" id="speakAura"></div>
+        <svg id="alexAvatar" viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bgGrad" cx="50%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#312e81"/>
+              <stop offset="100%" stop-color="#1e1b4b"/>
+            </radialGradient>
+            <radialGradient id="skinGrad" cx="42%" cy="38%" r="60%">
+              <stop offset="0%" stop-color="#fde68a"/>
+              <stop offset="60%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#d97706"/>
+            </radialGradient>
+            <radialGradient id="skinGrad2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fcd34d"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </radialGradient>
+          </defs>
+          <rect width="360" height="460" fill="url(#bgGrad)" rx="20"/>
+          <rect x="0" y="390" width="360" height="70" fill="#6C63FF" opacity=".08"/>
+          <rect x="0" y="388" width="360" height="3" fill="#6C63FF" opacity=".2"/>
+          <!-- Suit -->
+          <path d="M10 460 L55 315 L125 345 L180 365 L235 345 L305 315 L350 460Z" fill="#1a1a3e"/>
+          <path d="M55 315 L125 345 L108 385 L45 370Z" fill="#1e1e50"/>
+          <path d="M305 315 L235 345 L252 385 L315 370Z" fill="#1e1e50"/>
+          <path d="M125 345 L180 365 L235 345 L228 460 L132 460Z" fill="#e8eaf6"/>
+          <path d="M152 328 L180 358 L178 326 L163 320Z" fill="#e8eaf6"/>
+          <path d="M208 328 L180 358 L182 326 L197 320Z" fill="#e8eaf6"/>
+          <path d="M172 328 L188 328 L196 400 L180 414 L164 400Z" fill="#6C63FF"/>
+          <path d="M172 328 L188 328 L180 342Z" fill="#4338ca"/>
+          <!-- AI badge -->
+          <circle cx="96" cy="332" r="7" fill="#6C63FF"/>
+          <text x="96" y="336" text-anchor="middle" font-size="6" fill="white" font-weight="bold" font-family="sans-serif">AI</text>
+          <!-- Neck -->
+          <path d="M156 258 Q154 302 163 324 L197 324 Q206 302 204 258Z" fill="url(#skinGrad)"/>
+          <!-- Head -->
+          <ellipse id="headEl" cx="180" cy="182" rx="90" ry="98" fill="url(#skinGrad)"/>
+          <ellipse cx="180" cy="266" rx="52" ry="14" fill="#d97706" opacity=".15"/>
+          <!-- Hair -->
+          <path d="M92 162 Q88 100 112 78 Q140 56 180 54 Q220 56 248 78 Q272 100 268 162 Q254 128 232 116 Q208 104 180 104 Q152 104 128 116 Q108 130 92 162Z" fill="#0f0f1a"/>
+          <path d="M92 162 Q90 210 98 236 Q101 224 102 198 Q102 176 112 160Z" fill="#0a0a14"/>
+          <path d="M268 162 Q270 210 262 236 Q259 224 258 198 Q258 176 248 160Z" fill="#0a0a14"/>
+          <!-- Ears -->
+          <ellipse cx="92" cy="193" rx="13" ry="19" fill="url(#skinGrad2)"/>
+          <ellipse cx="92" cy="193" rx="7" ry="11" fill="#f59e0b" opacity=".3"/>
+          <ellipse cx="268" cy="193" rx="13" ry="19" fill="url(#skinGrad2)"/>
+          <ellipse cx="268" cy="193" rx="7" ry="11" fill="#f59e0b" opacity=".3"/>
+          <!-- Glasses frames -->
+          <rect x="100" y="154" width="62" height="38" rx="13" fill="none" stroke="#6C63FF" stroke-width="3.5"/>
+          <rect x="168" y="154" width="62" height="38" rx="13" fill="none" stroke="#6C63FF" stroke-width="3.5"/>
+          <line x1="162" y1="170" x2="168" y2="170" stroke="#6C63FF" stroke-width="3"/>
+          <line x1="92" y1="170" x2="100" y2="170" stroke="#6C63FF" stroke-width="2.5"/>
+          <line x1="230" y1="170" x2="268" y2="170" stroke="#6C63FF" stroke-width="2.5"/>
+          <rect x="102" y="156" width="58" height="34" rx="11" fill="#6C63FF" opacity=".2"/>
+          <rect x="170" y="156" width="58" height="34" rx="11" fill="#6C63FF" opacity=".2"/>
+          <!-- Eyebrows -->
+          <path d="M110 150 Q130 140 150 147" stroke="#0f0f1a" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M190 147 Q210 140 230 150" stroke="#0f0f1a" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <!-- Eyes -->
+          <ellipse cx="131" cy="173" rx="21" ry="14" fill="white"/>
+          <circle cx="132" cy="173" r="9" fill="#312e81"/>
+          <circle cx="132" cy="173" r="5" fill="#0a0a14"/>
+          <circle cx="128" cy="169" r="3" fill="white" opacity=".9"/>
+          <ellipse id="leftLid" cx="131" cy="173" rx="21" ry="1" fill="url(#skinGrad)"/>
+
+          <ellipse cx="209" cy="173" rx="21" ry="14" fill="white"/>
+          <circle cx="208" cy="173" r="9" fill="#312e81"/>
+          <circle cx="208" cy="173" r="5" fill="#0a0a14"/>
+          <circle cx="204" cy="169" r="3" fill="white" opacity=".9"/>
+          <ellipse id="rightLid" cx="209" cy="173" rx="21" ry="1" fill="url(#skinGrad)"/>
+          <!-- Nose -->
+          <path d="M174 194 L168 222 Q172 228 180 229 Q188 228 192 222 L186 194" fill="none" stroke="#d97706" stroke-width="1.2" opacity=".45"/>
+          <ellipse cx="172" cy="225" rx="6" ry="4" fill="#f59e0b" opacity=".2"/>
+          <ellipse cx="188" cy="225" rx="6" ry="4" fill="#f59e0b" opacity=".2"/>
+          <!-- Cheeks -->
+          <ellipse cx="118" cy="212" rx="22" ry="13" fill="#f87171" opacity=".1"/>
+          <ellipse cx="242" cy="212" rx="22" ry="13" fill="#f87171" opacity=".1"/>
+          <!-- Mouth group -->
+          <g id="mouthGroup">
+            <path d="M150 245 Q167 238 180 241 Q193 238 210 245 Q193 251 180 249 Q167 251 150 245Z" fill="#c05040"/>
+            <path id="lowerLip" d="M150 245 Q180 262 210 245" fill="#e07055" opacity=".9"/>
+            <path id="lipSeam" d="M150 245 Q180 249 210 245" stroke="#a04030" stroke-width="1.5" fill="none" opacity=".6"/>
+            <ellipse id="innerMouth" cx="180" cy="249" rx="26" ry="0" fill="#1a0808"/>
+            <ellipse id="teethEl" cx="180" cy="246" rx="21" ry="0" fill="#f0ece8"/>
+            <ellipse id="tongueEl" cx="180" cy="255" rx="11" ry="0" fill="#d05050" opacity=".75"/>
+          </g>
+          <!-- Headset mic detail -->
+          <circle cx="268" cy="190" r="4" fill="#4338ca" opacity=".6"/>
+          <path d="M268 194 Q275 204 272 216" stroke="#4338ca" stroke-width="2" fill="none" opacity=".5"/>
+          <circle cx="272" cy="218" r="3" fill="#6C63FF" opacity=".7"/>
+        </svg>
+      </div>
+      <div class="alex-name-tag">Alex 🤖</div>
+      <div class="alex-role-tag">Senior AI Interview Coach</div>
+      <div class="emotion-badge" id="emotionBadge" style="background:var(--accentd);color:var(--accent);border-color:rgba(108,99,255,.25)">
+        <span id="emotionIcon">😊</span><span id="emotionText">Friendly</span>
+      </div>
+      <div class="status-strip" id="statusStrip">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusTxt">Ready</span>
+      </div>
+      <div class="qdots-row" id="qdotsRow"></div>
+      <div class="live-score-box">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)">Score</div>
+          <div class="lsb-val" id="liveScore">—</div>
+        </div>
+        <div style="font-size:13px;color:var(--text3);margin:0 4px">/100</div>
+        <div class="lsb-meta">
+          <div class="lsb-meta-top">Answered</div>
+          <div class="lsb-meta-val" id="liveAnswered">0/0</div>
+        </div>
+      </div>
+      <div class="humor-strip" id="humorStrip">💡 Alex tip: Take a breath. Even robots get nervous... just kidding, I don't. But you've got this!</div>
+    </div>
+
+    <!-- Main interview area -->
+    <div class="int-main" id="intMain">
+      <div class="alex-bubble" id="qBubble">
+        <div class="ab-avatar">🤖</div>
+        <div class="ab-body">
+          <div class="ab-meta">
+            <div class="ab-name">Alex</div>
+            <div class="cat-tag" id="qCatTag">Introduction</div>
+            <div class="diff-tag easy" id="qDiffTag">Easy</div>
+          </div>
+          <div class="q-body" id="qBodyEl">
+            <div class="typing-dots">
+              <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            </div>
+          </div>
+          <div class="hint-box" id="hintBox"></div>
+        </div>
+      </div>
+
+      <div class="ans-zone">
+        <div class="ans-zone-label">
+          <span>✍️ Your Answer</span>
+          <span id="wordCnt" style="font-weight:600">0 words</span>
+        </div>
+        <textarea id="ansBox" placeholder="Type your answer, or click 🎙 to speak..." onkeyup="updateWordCount()"></textarea>
+        <div class="btn-row2">
+          <button class="ibtn-mic idle" id="micBtn" onclick="toggleMic()"><span id="micIco">🎙</span><span id="micLbl">Speak</span></button>
+          <button class="ibtn ibtn-ghost" id="hintBtn" onclick="toggleHint()">💡 Hint</button>
+          <button class="ibtn ibtn-primary" id="submitBtn" onclick="submitAnswer()" disabled>Submit →</button>
+          <span class="skip-lnk" onclick="skipQ()">Skip →</span>
+        </div>
+      </div>
+
+      <div id="prevWrap" style="display:none">
+        <div class="prev-title">📋 Previous Answers</div>
+        <div id="prevItems"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="int-bottom">
+    <div class="prog-segs">
+      <div class="seg e on" id="segE"></div>
+      <div class="seg m" id="segM"></div>
+      <div class="seg h" id="segH"></div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-lbl" id="progLbl">0/8</div>
+  </div>
+</div>
+
+<!-- ═══ RESULTS SCREEN ═══ -->
+<div id="resultsScreen" class="screen">
+  <div class="res-header fade-in">
+    <div class="res-badge">🏆</div>
+    <div class="res-name" id="resName"></div>
+    <div class="res-sub">Interview Complete — Alex's AI Report</div>
+  </div>
+  <div class="res-grid" id="resGrid"></div>
+  <div class="verdict-card" id="verdictCard">
+    <div class="v-title">🤖 Alex's Hiring Recommendation</div>
+    <div class="v-rec" id="vRec"></div>
+    <div class="v-stars" id="vStars"></div>
+    <div class="v-note" id="vNote"></div>
+  </div>
+  <div style="width:100%;max-width:760px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">📝 Answer Review with AI Feedback</div>
+    <div id="arItemsEl"></div>
+  </div>
+  <button class="btn-restart" onclick="backToDash()">← Back to Dashboard</button>
+</div>
+
+<script>
+const INDUSTRIES = [
+  {id:'tech',name:'Software Engineering',icon:'💻',desc:'Full-stack, backend, algorithms, system design',badge:'hot',
+   role:'Software Engineer',
+   questions:[
+     {text:"Hey! I'm Alex, your AI interviewer. Before we dive into the technical deep end — let's warm up. Tell me about yourself, your engineering background, and what got you into software development. No need to recite your CV; just be human. (Unlike me! ...robot joke, sorry.)",cat:"Introduction",diff:"easy",hint:"Talk about your journey: where you started, what you love building, and what excites you about this role."},
+     {text:"Great! Walk me through your strongest technical skills and a recent project where you applied them. Be specific — what stack, what problem, what was YOUR contribution? I've heard 'I worked in a team on a web app' roughly 4,000 times. Surprise me.",cat:"Technical Skills",diff:"easy",hint:"Name the tech stack, describe the architecture, and highlight your personal impact. Mention challenges you overcame."},
+     {text:"Now let's get slightly spicy: explain how you'd design a URL shortener like bit.ly at scale. Think aloud — I care more about your thought process than a perfect answer. (I'm an AI, I can evaluate nuance. Allegedly.)",cat:"System Design",diff:"mid",hint:"Consider: hashing, DB schema, caching, read/write ratios, CDN, analytics. Scale from 1M to 1B users."},
+     {text:"You're three days before a product launch and you discover a critical bug in production. Walk me through exactly what you do — step by step. Who do you talk to? How do you prioritize? What's your incident response process?",cat:"Problem Solving",diff:"mid",hint:"Show your systematic thinking: triage, communication, hotfix vs rollback, post-mortem. This reveals your professionalism under pressure."},
+     {text:"Here's a classic disguised as a trick: What's the difference between a process and a thread? And how does this relate to something you've actually used in your code — async/await, goroutines, workers, whatever you've touched?",cat:"CS Fundamentals",diff:"mid",hint:"Theory first, then connect it to real usage. Show you understand WHY you use async patterns, not just HOW."},
+     {text:"Tell me about a time you had a significant technical disagreement with a colleague or your team. What was it about? How did you handle it? What happened? (Diplomatic answers are welcome. Fictional ones are not.)",cat:"Collaboration",diff:"mid",hint:"Use STAR. Show you can disagree professionally, listen, change your mind when wrong, and stand firm when right."},
+     {text:"Alright, hard mode: you've inherited a legacy codebase that is — and I'm quoting your predecessor's comments here — 'a beautiful disaster.' How do you approach understanding it, improving it, and convincing a skeptical team to let you refactor?",cat:"Legacy Systems",diff:"hard",hint:"Talk about code reading strategies, test coverage first, incremental refactoring, strangler fig pattern, team alignment, and business justification."},
+     {text:"Final boss: Why should WE hire YOU specifically? Not generically — specifically. What unique combination of skills, mindset, and experience do you bring that the 50 other engineers applying don't? This is your moment. Own it.",cat:"Value Proposition",diff:"hard",hint:"Be bold. Synthesize your unique traits: technical depth + soft skills + specific experience + how you think. Don't be generic."}
+   ]},
+  {id:'product',name:'Product Management',icon:'📊',desc:'Strategy, roadmaps, user research, metrics',badge:'hot',
+   role:'Product Manager',
+   questions:[
+     {text:"Welcome! I'm Alex. Let's start comfortable: tell me about your PM background and the product you're proudest of having worked on. What was it, what was your role, and what impact did it have?",cat:"Background",diff:"easy",hint:"Focus on one product. Describe the problem it solved, your specific contribution, and measurable outcomes."},
+     {text:"Pick any app on your phone you use daily and tell me: what's one feature you'd improve, why, and how you'd validate whether it works? I want to see your product instincts — not a random redesign.",cat:"Product Sense",diff:"easy",hint:"Show a problem-first approach: identify user pain, prioritize the solution, define success metrics, and think about trade-offs."},
+     {text:"Walk me through how you'd prioritize a backlog with 40 features, 5 stakeholders with conflicting opinions, a 3-month timeline, and a nervous CEO watching. Go.",cat:"Prioritization",diff:"mid",hint:"Name a framework: RICE, MoSCoW, ICE. Show how you gather stakeholder input, align on goals, and make data-informed decisions."},
+     {text:"Your key metric drops 20% overnight. Walk me through your entire investigation process — from first alert to root cause and recovery plan.",cat:"Metrics & Analysis",diff:"mid",hint:"Structure: internal vs external, segment the data, check for launches/bugs/external events, form hypotheses, test them, communicate findings."},
+     {text:"Tell me about a time you had to kill a feature or project you or your team was emotionally attached to. How did you make the decision, and how did you handle the human side of it?",cat:"Decision Making",diff:"mid",hint:"This tests your objectivity and leadership. Show data drove the decision, how you communicated it honestly, and what you learned."},
+     {text:"How do you balance short-term business needs — like hitting a quarterly target — with long-term product health and technical debt? Give a real example.",cat:"Strategy",diff:"hard",hint:"Show you understand both sides. Talk about negotiating timelines, communicating trade-offs to leadership, and protecting long-term vision."},
+     {text:"You're launching in a new market with no existing data, no local team, and a 60-day timeline. How do you build your go-to-market strategy and what does success look like at day 30 vs day 60?",cat:"Go-to-Market",diff:"hard",hint:"Cover: market research, stakeholder mapping, proxy metrics, lean experiments, risk mitigation, and how you'd iterate quickly."},
+     {text:"Final question: what makes a truly great product manager, and where do YOU fall short? I want your honest self-assessment — not the interview version.",cat:"Self-Awareness",diff:"hard",hint:"Name genuine weaknesses with context. Show self-awareness plus a growth plan. This builds more trust than fake humility."}
+   ]},
+  {id:'data',name:'Data Science & ML',icon:'🧠',desc:'Machine learning, statistics, data analysis',badge:'',
+   role:'Data Scientist',
+   questions:[
+     {text:"Hello! I'm Alex. Let's ease in: tell me about your data science background, the kinds of problems you've worked on, and what drew you to this field. I find human origin stories fascinating — as a non-human. 🤖",cat:"Background",diff:"easy",hint:"Cover: education path, tools mastered, domains worked in (NLP, CV, tabular, etc.), and what you find intellectually exciting."},
+     {text:"Walk me through your process for approaching a new machine learning problem from scratch — from raw data to deployed model. Don't just list steps; explain why you do each one.",cat:"ML Workflow",diff:"easy",hint:"Cover: problem framing, EDA, feature engineering, model selection, validation strategy, deployment, and monitoring."},
+     {text:"Explain the bias-variance tradeoff to me like I'm a smart non-technical stakeholder. Then tell me how you actually handle it in practice.",cat:"Fundamentals",diff:"mid",hint:"Use an analogy first (darts, etc.), then transition to technical: regularization, cross-validation, ensemble methods, learning curves."},
+     {text:"Your model performs beautifully in testing with 96% accuracy — but in production it's basically useless. Walk me through how you diagnose and fix this.",cat:"Model Debugging",diff:"mid",hint:"Train/test distribution shift, data leakage, target leakage, class imbalance, temporal leakage, infrastructure bugs. Be systematic."},
+     {text:"Tell me about your most complex ML project: what was the business problem, what data did you have, what approach did you take, and what actually happened? The real story, not the sanitized version.",cat:"Project Deep Dive",diff:"mid",hint:"Be honest about failures. Show your thinking, iteration, and what you'd do differently. Authenticity beats a perfect narrative."},
+     {text:"How do you explain a complex model's predictions to a stakeholder who doesn't trust 'black boxes' and needs to make a business decision based on it?",cat:"Communication",diff:"hard",hint:"Cover: SHAP/LIME, feature importance, confidence intervals, model cards, and how you build stakeholder trust incrementally."},
+     {text:"Design an ML system to detect fraudulent transactions at a bank processing 10 million transactions per day, with <100ms latency requirements and an imbalanced dataset (0.01% fraud rate).",cat:"ML System Design",diff:"hard",hint:"Address: real-time vs batch, feature store, model choice (isolation forest, LightGBM, deep learning), threshold tuning, precision/recall trade-off, online learning."},
+     {text:"Last question: what's your honest take on where you're still growing as a data scientist? And what's one thing you've been wrong about in this field that you've since corrected?",cat:"Growth Mindset",diff:"hard",hint:"Intellectual honesty wins here. Mention a real gap and how you're addressing it. Share a genuine belief update — it shows maturity."}
+   ]},
+  {id:'design',name:'UX/UI Design',icon:'🎨',desc:'User research, interaction design, prototyping',badge:'',
+   role:'UX Designer',
+   questions:[
+     {text:"Hey! I'm Alex. Designers, I love interviewing — you people actually think about humans, unlike most of engineering. Tell me: what's your design background and what kind of experiences do you design?",cat:"Background",diff:"easy",hint:"Describe your design focus (web, mobile, service design, etc.), tools, and the types of users you've designed for."},
+     {text:"Walk me through your design process for a project you're proud of — from the first brief to the final shipped product. How did your thinking evolve?",cat:"Process",diff:"easy",hint:"Show problem framing, research methods, ideation, prototyping, usability testing, iteration, and stakeholder collaboration."},
+     {text:"Redesign the checkout flow for an e-commerce app for elderly users with low digital literacy. Walk me through your entire approach.",cat:"Design Challenge",diff:"mid",hint:"Research first: empathy mapping for elderly users. Then: accessibility, cognitive load, error prevention, large touch targets, clear progress, confirmation steps."},
+     {text:"How do you fight for design quality when you're under pressure from engineering to cut corners and from product to ship faster? Give me a real example.",cat:"Advocacy",diff:"mid",hint:"Show strategic negotiation: prioritize the highest-impact design elements, offer phased delivery, use data to make the case, know which battles matter."},
+     {text:"Tell me about a time user research fundamentally changed your design assumptions. What did you learn, and how did it affect the final product?",cat:"Research",diff:"mid",hint:"Show genuine insight from users (not confirmation bias). Describe how you acted on findings even when it meant more work or changing course."},
+     {text:"What's your approach to designing for accessibility, and give me a specific example of how accessibility constraints actually improved your design for ALL users, not just people with disabilities?",cat:"Accessibility",diff:"hard",hint:"Mention WCAG, specific patterns (focus management, color contrast, screen reader), and examples like curb cut effect — design for edge cases improves the mainstream."},
+     {text:"Design a new onboarding experience for a B2B SaaS product with a 2-week trial where users currently drop off within 3 days. You have analytics showing exactly where they leave. What's your plan?",cat:"UX Strategy",diff:"hard",hint:"Cover: diagnostic analysis of drop-off points, user interviews, progressive disclosure in onboarding, aha moment mapping, email/in-app nudges, success metrics."},
+     {text:"Final question: what's a design decision you made that you now regret, and what would you do differently?",cat:"Reflection",diff:"hard",hint:"Honesty matters more than perfection. Show what you learned and how it changed your practice. Intellectual humility is a design superpower."}
+   ]},
+  {id:'marketing',name:'Digital Marketing',icon:'📣',desc:'Growth, campaigns, SEO, performance marketing',badge:'new',
+   role:'Marketing Manager',
+   questions:[
+     {text:"Welcome! I'm Alex. Marketing people! You're the ones who make the rest of us look good. Tell me about your marketing background and the campaign or project you're most proud of.",cat:"Background",diff:"easy",hint:"Describe the campaign goal, your role, channels used, and measurable results. Be specific about numbers."},
+     {text:"Walk me through how you'd build a full-funnel marketing strategy for a new SaaS product launching in 90 days with a $50,000 budget.",cat:"Strategy",diff:"easy",hint:"Cover: ICP definition, channel mix (organic + paid + content + outreach), budget allocation, funnel stages, success metrics, and feedback loops."},
+     {text:"Your paid search CAC suddenly increased 40% month-over-month. What do you investigate first, and how do you stabilize it?",cat:"Performance",diff:"mid",hint:"Check: competition/bidding, quality score, audience fatigue, landing page changes, seasonality, attribution model. Show systematic debugging."},
+     {text:"Tell me about a marketing campaign that underperformed and what you did about it. Not just what went wrong — how you diagnosed it and what you actually changed.",cat:"Problem Solving",diff:"mid",hint:"Show analytical mindset: how you measured failure, isolated variables, formed a hypothesis, tested it, and iterated. No blame — just learning."},
+     {text:"How do you prove marketing ROI to a CFO who thinks 'brand awareness' is just money being thrown into a bonfire?",cat:"Attribution",diff:"mid",hint:"Cover: multi-touch attribution, incrementality testing, revenue attribution models, brand lift measurement, and how to translate marketing metrics to business outcomes."},
+     {text:"Design a content marketing strategy to grow organic traffic from 10K to 100K monthly visitors in 12 months for a B2B fintech company.",cat:"SEO & Content",diff:"hard",hint:"Cover: keyword research strategy, topical authority, content pillars, link building, technical SEO, content ops, and realistic timeline with milestones."},
+     {text:"How do you approach marketing personalization at scale without crossing into creepy territory — and where do you draw the ethical line?",cat:"Ethics & Data",diff:"hard",hint:"Cover: consent-first design, contextual vs behavioral targeting, privacy regulations (GDPR, CCPA), anonymization, and how to build trust while still being relevant."},
+     {text:"Final: what's the biggest mistake you've made in your marketing career, and what did the experience permanently change about how you work?",cat:"Growth Mindset",diff:"hard",hint:"Own it completely. Show the lesson was real, lasting, and that it made you genuinely better. Authenticity here is more impressive than any result."}
+   ]},
+  {id:'finance',name:'Finance & Banking',icon:'💰',desc:'Corporate finance, investment banking, FP&A',badge:'',
+   role:'Financial Analyst',
+   questions:[
+     {text:"Hello! I'm Alex. Finance is serious business — but we can still be human about it. Tell me about your finance background, what drew you to the field, and what area excites you most.",cat:"Background",diff:"easy",hint:"Describe your education, certifications (CFA, CPA etc.), experience, and genuine intellectual interests within finance."},
+     {text:"Walk me through how you'd value a company. What approach would you use for a profitable tech company vs. an early-stage startup, and why?",cat:"Valuation",diff:"easy",hint:"Cover: DCF, comparable company analysis, precedent transactions. Explain which method fits which context and why multiples differ by industry."},
+     {text:"Tell me about a financial model you built that was complex or unusually challenging. Walk me through the structure, the assumptions, and how you stress-tested it.",cat:"Financial Modeling",diff:"mid",hint:"Detail the model's purpose, key assumptions, sensitivity analysis, scenario analysis, and how you communicated uncertainty to decision-makers."},
+     {text:"Your company's Q3 numbers just came in significantly below forecast. You're presenting to the board tomorrow morning. How do you prepare and what do you lead with?",cat:"Financial Communication",diff:"mid",hint:"Cover: variance analysis, root cause identification, forward guidance, proposed corrective actions, and how you frame bad news honestly and constructively."},
+     {text:"How do you approach building a 5-year financial forecast when the market is highly uncertain and historical data is unreliable?",cat:"Planning",diff:"mid",hint:"Scenario modeling, driver-based forecasting, rolling forecasts, sensitivity tables, Monte Carlo thinking, and how you communicate uncertainty ranges to leadership."},
+     {text:"Walk me through a situation where you identified a significant financial risk that others missed, and explain how you raised it and what happened.",cat:"Risk Management",diff:"hard",hint:"Show analytical depth: how you spotted it, how you quantified it, how you escalated effectively, and what the outcome was — even if incomplete."},
+     {text:"You're advising a company on whether to acquire a competitor. How do you structure your analysis, and what are the most common deal killers you look for that others miss?",cat:"M&A",diff:"hard",hint:"Cover: strategic rationale, synergy quantification, cultural fit, integration complexity, valuation discipline, and hidden liabilities in due diligence."},
+     {text:"Final question: What's a financial assumption or popular financial wisdom you disagree with — and why? Defend your position.",cat:"Critical Thinking",diff:"hard",hint:"Pick something you genuinely believe. Support it with reasoning and evidence. This tests intellectual independence and the ability to think beyond conventional wisdom."}
+   ]},
+  {id:'hr',name:'Human Resources',icon:'🤝',desc:'Talent acquisition, people ops, organizational design',badge:'',
+   role:'HR Business Partner',
+   questions:[
+     {text:"Hi! I'm Alex. HR people — the ones who decide if people like me get hired. Very meta. Tell me about your HR background and the area of people operations you find most meaningful.",cat:"Background",diff:"easy",hint:"Cover your HR specialization (TA, HRBP, L&D, compensation, etc.), industries, and what drives your passion for people work."},
+     {text:"Walk me through your approach to designing a hiring process that is both rigorous and candidate-friendly. How do you balance thoroughness with respect for people's time?",cat:"Talent Acquisition",diff:"easy",hint:"Structured interviews, diverse panels, candidate experience touchpoints, timeline transparency, rubric-based evaluation, and bias mitigation."},
+     {text:"A high-performing employee comes to you and says they're ready to quit because they feel undervalued and underpaid. You have limited budget. What do you do?",cat:"Retention",diff:"mid",hint:"Listen first. Explore all levers: comp review, career development, recognition, role evolution, growth path, team dynamics. Know when to escalate and when to let go."},
+     {text:"Tell me about the most difficult employee relations situation you've handled. What happened, how did you navigate it, and what was the outcome?",cat:"ER Case",diff:"mid",hint:"Show judgment, empathy, legal awareness, documentation discipline, and objectivity. Balance individual needs with company interests and fairness."},
+     {text:"How do you measure the effectiveness of an HR function? What metrics do you track, and which one do most HR teams miss that actually matters most?",cat:"HR Analytics",diff:"mid",hint:"Go beyond headcount and time-to-fill: engagement correlation with performance, regrettable attrition, offer acceptance rate, internal mobility rate, manager effectiveness scores."},
+     {text:"Design an onboarding program for 50 new hires across 3 different time zones, 4 departments, and 2 different work arrangements (remote and hybrid) — launching in 6 weeks.",cat:"Program Design",diff:"hard",hint:"Core vs department-specific track, pre-boarding, buddy system, async resources, manager alignment, 30/60/90 day milestones, feedback loops."},
+     {text:"The company wants to implement a new performance management system and the existing culture strongly resists formal ratings. How do you design and roll out something that actually works?",cat:"Change Management",diff:"hard",hint:"Change management fundamentals: stakeholder mapping, pilot programs, manager training, continuous feedback culture, communication strategy, executive sponsorship."},
+     {text:"Final: what's the biggest ethical challenge you've faced in HR, and how did you handle it when doing the right thing conflicted with what leadership wanted?",cat:"Ethics",diff:"hard",hint:"Be honest about the tension. Show your values, how you escalated appropriately, what you were willing to risk, and what you'd do the same or differently."}
+   ]},
+  {id:'sales',name:'Sales & Business Dev',icon:'🤝',desc:'B2B/B2C sales, account management, partnerships',badge:'new',
+   role:'Account Executive',
+   questions:[
+     {text:"Hey! I'm Alex. Sales people — the brave ones. You get more 'no' than anyone and still show up. Tell me about your sales background and what you sell or have sold. What do you love about sales?",cat:"Background",diff:"easy",hint:"Describe your sales motion (inbound/outbound, B2B/B2C, AE/SDR/AM), deal sizes, sales cycles, and what genuinely motivates you in the role."},
+     {text:"Walk me through your full sales process from first touch to close. How does it vary by deal size, and where do most deals die in your pipeline?",cat:"Sales Process",diff:"easy",hint:"Cover: prospecting, discovery, qualification (MEDDIC/BANT), demo, objection handling, negotiation, close. Be honest about where you lose deals and why."},
+     {text:"Tell me about your largest or most complex deal. How long was the cycle? Who were the stakeholders? What almost killed it, and how did you save it?",cat:"Complex Deals",diff:"mid",hint:"Detail the multi-threading, consensus building, champion development, legal/procurement navigation. Show strategic account management, not just closing tactics."},
+     {text:"You've had three months in a row below quota. Your manager is losing confidence. What do you do — practically and mentally?",cat:"Resilience",diff:"mid",hint:"Honest self-diagnosis: pipeline quality, discovery skills, ICP fit, activity levels. Show accountability, a concrete improvement plan, and how you manage performance anxiety."},
+     {text:"A prospect you've been nurturing for 6 months just told you they're going with your competitor and there's 'nothing you can do.' What's your move?",cat:"Objection Handling",diff:"mid",hint:"Don't panic. Seek a real conversation: understand why, validate their decision, ask if there are any unresolved concerns, leave the door open gracefully. Sometimes you lose — how you lose matters."},
+     {text:"Design a territory plan for a new sales role where you're covering 200 mid-market accounts in fintech, with a 90-day ramp, no existing relationships, and a 6-month average sales cycle.",cat:"Planning",diff:"hard",hint:"Account segmentation, ICP scoring, prioritization matrix, activity targets, pipeline coverage ratio (3-4x), quick wins vs strategic bets, relationship-building timeline."},
+     {text:"You're negotiating a $500K deal and the procurement team comes back asking for a 25% discount and threatening to go to a competitor. How do you respond?",cat:"Negotiation",diff:"hard",hint:"Never discount without getting value in return: multi-year commit, case study rights, expansion scope, faster close. Protect your pricing integrity and understand their real constraints."},
+     {text:"Final: sell me something right now. It doesn't have to be complex — sell me a pen, your phone, or this interview itself. I'll play the difficult buyer.",cat:"Selling Skills",diff:"hard",hint:"Discovery before pitch: ask what I need it for. Lead with value, handle objections naturally, close confidently. Don't memorize lines — be human and adaptive."}
+   ]}
+];
+
+const HUMOR_TIPS=[
+  "💡 Tip: Alex interviewed 1,247 people today. You're already his favorite. (He says that to everyone.)",
+  "🤖 Fun fact: Alex was nervous in his first interview too. He crashed twice and blamed Windows.",
+  "😄 Note: 'I'm a perfectionist' as a weakness has been heard 6,413 times. Please innovate.",
+  "🎯 STAR method really works: Situation → Task → Action → Result. Not: Stutter → Tangent → Avoid → Ramble.",
+  "😅 Alex once interviewed a candidate who brought their dog. The dog got a better score.",
+  "💼 Breathe! Alex's bark is worse than his byte. He IS a robot. Get it? ...He'll show himself out.",
+  "🌟 You passed the initial screen. You're already winning. Don't lose it now by panicking!",
+  "🤓 Big words don't impress Alex. Clear thinking does. He's read 40 million documents. He's seen it all.",
+  "☕ If this were a coffee chat, Alex would order: 01001011 01000001 01000110 01000101. (Binary coffee.)",
+  "🎭 True story: The best interviewees are honest about what they don't know. Fake confidence breaks instantly.",
+];
+
+const EMOTIONS={
+  thinking:{icon:"🤔",text:"Thinking",bg:"var(--accentd)",col:"var(--accent)",border:"rgba(108,99,255,.25)"},
+  pleased:{icon:"😊",text:"Pleased",bg:"var(--greend)",col:"var(--green)",border:"rgba(34,197,94,.25)"},
+  curious:{icon:"🧐",text:"Curious",bg:"var(--amberd)",col:"var(--amber)",border:"rgba(245,158,11,.25)"},
+  skeptical:{icon:"🤨",text:"Skeptical",bg:"var(--redd)",col:"var(--red)",border:"rgba(239,68,68,.25)"},
+  impressed:{icon:"🤩",text:"Impressed",bg:"var(--greend)",col:"var(--green)",border:"rgba(34,197,94,.25)"},
+  friendly:{icon:"😄",text:"Friendly",bg:"var(--accentd)",col:"var(--accent)",border:"rgba(108,99,255,.25)"},
+  neutral:{icon:"😐",text:"Neutral",bg:"var(--surface)",col:"var(--text2)",border:"var(--border)"},
+};
+
+let STATE={
+  user:null, role:'candidate',
+  industry:null, questions:[],
+  qIndex:0, answers:[],
+  timerInterval:null, startTime:null,
+  blinkTimeout:null, talkInterval:null,
+  micActive:false, recognition:null,
+  hintVisible:false,
+  users: JSON.parse(localStorage.getItem('hireai_users')||'[]'),
+  history: JSON.parse(localStorage.getItem('hireai_history')||'[]'),
+};
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function switchTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'':'none';
+  document.getElementById('tabLogin').classList.toggle('active',t==='login');
+  document.getElementById('tabRegister').classList.toggle('active',t==='register');
+}
+
+let selectedRole='candidate';
+function pickRole(r){
+  selectedRole=r;
+  document.getElementById('roleCandidate').classList.toggle('active',r==='candidate');
+  document.getElementById('roleRecruiter').classList.toggle('active',r==='recruiter');
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){alert('Please fill all fields.');return;}
+  const user=STATE.users.find(u=>u.email===email&&u.password===pass);
+  if(!user){alert('Invalid email or password.');return;}
+  loginUser(user);
+}
+
+function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if(!name||!email||!pass){alert('Please fill all fields.');return;}
+  if(pass.length<6){alert('Password must be at least 6 characters.');return;}
+  if(STATE.users.find(u=>u.email===email)){alert('Email already registered.');return;}
+  const user={id:Date.now().toString(),name,email,password:pass,role:selectedRole,skills:[],photo:'',createdAt:new Date().toISOString()};
+  STATE.users.push(user);
+  localStorage.setItem('hireai_users',JSON.stringify(STATE.users));
+  loginUser(user);
+}
+
+function demoLogin(role){
+  const existing=STATE.users.find(u=>u.email===`demo_${role}@hireai.pro`);
+  if(existing){loginUser(existing);return;}
+  const user={
+    id:'demo_'+role,name:role==='candidate'?'Alex Demo':' HR Manager',
+    email:`demo_${role}@hireai.pro`,password:'demo',role,skills:role==='candidate'?['JavaScript','React','Node.js','Python']:[],
+    photo:'',createdAt:new Date().toISOString()
+  };
+  STATE.users.push(user);
+  localStorage.setItem('hireai_users',JSON.stringify(STATE.users));
+  loginUser(user);
+}
+
+function loginUser(user){
+  STATE.user=user;
+  STATE.role=user.role;
+  showDash();
+}
+
+function showDash(){
+  showScreen('dashScreen');
+  const u=STATE.user;
+  const initials=u.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  document.getElementById('navUserName').textContent=u.name;
+  const navAv=document.getElementById('navAvatar');
+  if(u.photo){navAv.innerHTML=`<img src="${u.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;}
+  else{navAv.textContent=initials;}
+  const hour=new Date().getHours();
+  const greeting=hour<12?'Good morning':'hour'<17?'Good afternoon':'Good evening';
+  document.getElementById('dashGreeting').textContent=`${greeting}, ${u.name.split(' ')[0]}! 👋`;
+
+  if(u.role==='recruiter'){
+    document.getElementById('dashSub').textContent='Review your candidate pipeline.';
+    document.getElementById('navRecruiter').style.display='';
+    switchDashTab('recruiter');
+  }else{
+    document.getElementById('dashSub').textContent='Ready to practice? Pick an industry below.';
+    document.getElementById('navRecruiter').style.display='none';
+    switchDashTab('home');
+  }
+  refreshStats();
+}
+
+function switchDashTab(t){
+  document.getElementById('candidateView').style.display=t==='home'?'':'none';
+  document.getElementById('recruiterView').classList.toggle('active',t==='recruiter');
+  if(t==='home') buildIndustryGrid();
+  if(t==='recruiter') buildRecruiterTable();
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+}
+
+function refreshStats(){
+  const myH=STATE.history.filter(h=>h.userId===STATE.user.id);
+  const scores=myH.map(h=>h.score);
+  document.getElementById('statTotal').textContent=myH.length;
+  document.getElementById('statBest').textContent=scores.length?Math.max(...scores):'—';
+  document.getElementById('statAvg').textContent=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'':'—';
+  document.getElementById('statQ').textContent=myH.reduce((a,h)=>a+(h.answered||0),0);
+  buildHistList(myH);
+}
+
+function buildHistList(myH){
+  const el=document.getElementById('histList');
+  if(!myH.length){el.innerHTML='<div style="font-size:14px;color:var(--text3);padding:1rem 0">No interviews yet. Start one above!</div>';return;}
+  el.innerHTML=myH.slice(-5).reverse().map(h=>{
+    const sc=h.score;const cls=sc>=70?'high':sc>=50?'mid':'low';
+    const d=new Date(h.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `<div class="hist-row">
+      <div class="hist-role">${h.industry} — ${h.role}</div>
+      <div class="score-pill ${cls}">${sc}/100</div>
+      <div class="hist-date">${d}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildIndustryGrid(){
+  const grid=document.getElementById('industryGrid');
+  grid.innerHTML=INDUSTRIES.map(ind=>`
+    <div class="ind-card" onclick="startInterview('${ind.id}')">
+      ${ind.badge?`<div class="ind-badge ${ind.badge}">${ind.badge.toUpperCase()}</div>`:''}
+      <div class="ind-icon">${ind.icon}</div>
+      <div class="ind-name">${ind.name}</div>
+      <div class="ind-desc">${ind.desc}</div>
+    </div>
+  `).join('');
+}
+
+function buildRecruiterTable(){
+  const tb=document.getElementById('recruiterTable');
+  const all=STATE.history.filter(h=>h.userId);
+  if(!all.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text3)">No candidate data yet.</td></tr>';return;}
+  tb.innerHTML=all.slice(-20).reverse().map(h=>{
+    const u=STATE.users.find(u=>u.id===h.userId)||{name:'Unknown'};
+    const sc=h.score;const cls=sc>=70?'high':sc>=50?'mid':'low';
+    const verdict=sc>=70?'Advance':sc>=50?'Review':'Decline';
+    const d=new Date(h.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `<tr>
+      <td class="cand-name-cell">${u.name}</td>
+      <td>${h.role}</td>
+      <td><span class="score-pill ${cls}">${sc}/100</span></td>
+      <td style="color:${sc>=70?'var(--green)':sc>=50?'var(--amber)':'var(--red)'};font-weight:700">${verdict}</td>
+      <td>${d}</td>
+    </tr>`;
+  }).join('');
+}
+
+function startInterview(industryId){
+  STATE.industry=INDUSTRIES.find(i=>i.id===industryId);
+  STATE.questions=STATE.industry.questions;
+  STATE.qIndex=0;
+  STATE.answers=[];
+  document.getElementById('intIndustryLabel').textContent=STATE.industry.name;
+  document.getElementById('intCandName').textContent=STATE.user.name;
+  document.getElementById('intCandRole').textContent=STATE.industry.role;
+  const u=STATE.user;
+  const initials=u.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  const av=document.getElementById('intCandAv');
+  if(u.photo){av.innerHTML=`<img src="${u.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;}
+  else{av.textContent=initials;}
+  buildQDotsUI();
+  STATE.startTime=Date.now();
+  STATE.timerInterval=setInterval(tickTimer,1000);
+  setupBlink();
+  startHumorCycle();
+  showScreen('interviewScreen');
+  showQuestion(0);
+}
+
+function buildQDotsUI(){
+  const wrap=document.getElementById('qdotsRow');
+  wrap.innerHTML=STATE.questions.map((_,i)=>`<div class="qdot" id="qd-${i}">${i+1}</div>`).join('');
+  document.getElementById('liveAnswered').textContent=`0/${STATE.questions.length}`;
+}
+
+function showQuestion(idx){
+  STATE.qIndex=idx;
+  const q=STATE.questions[idx];
+  STATE.hintVisible=false;
+  const d=q.diff;
+  document.getElementById('qCatTag').textContent=q.cat;
+  document.getElementById('qDiffTag').textContent=d==='easy'?'Easy':d==='mid'?'Intermediate':'Hard';
+  document.getElementById('qDiffTag').className='diff-tag '+d;
+  document.getElementById('hintBox').textContent='💡 '+q.hint;
+  document.getElementById('hintBox').style.display='none';
+  document.getElementById('hintBtn').textContent='💡 Hint';
+  const pb=document.getElementById('phaseBadge');
+  if(d==='easy'){pb.textContent='Phase: Warmup ☀️';pb.className='phase-badge warm';}
+  else if(d==='mid'){pb.textContent='Phase: Core 🎯';pb.className='phase-badge core';}
+  else{pb.textContent='Phase: Challenge 🔥';pb.className='phase-badge hard';}
+  document.getElementById('segM').classList.toggle('on',d!=='easy');
+  document.getElementById('segH').classList.toggle('on',d==='hard');
+  document.getElementById('ansBox').value='';
+  document.getElementById('ansBox').disabled=true;
+  document.getElementById('micBtn').disabled=true;
+  document.getElementById('submitBtn').disabled=true;
+  updateWordCount();
+  document.querySelectorAll('.qdot').forEach(el=>el.classList.remove('cur'));
+  const dot=document.getElementById(`qd-${idx}`);
+  if(dot)dot.classList.add('cur');
+  const pct=(idx/STATE.questions.length)*100;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLbl').textContent=`${idx}/${STATE.questions.length}`;
+  document.getElementById('qBodyEl').innerHTML='<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  setEmotion('thinking');
+  const delay=Math.min(1500,600+q.text.length*1.5);
+  setTimeout(()=>{
+    document.getElementById('qBodyEl').textContent=q.text;
+    setEmotion('friendly');
+    setTimeout(()=>speakText(q.text),300);
+  },delay);
+}
+
+function updateWordCount(){
+  const val=document.getElementById('ansBox').value;
+  const w=val.trim().split(/\s+/).filter(x=>x).length;
+  document.getElementById('wordCnt').textContent=w+' word'+(w!==1?'s':'');
+}
+
+function toggleHint(){
+  STATE.hintVisible=!STATE.hintVisible;
+  document.getElementById('hintBox').style.display=STATE.hintVisible?'block':'none';
+  document.getElementById('hintBtn').textContent=STATE.hintVisible?'🙈 Hide':'💡 Hint';
+}
+
+function submitAnswer(){
+  const ans=document.getElementById('ansBox').value.trim();
+  if(!ans){
+    document.getElementById('ansBox').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('ansBox').style.borderColor='',1200);
+    return;
+  }
+  stopMic();
+  getAIFeedback(ans,false);
+}
+
+function skipQ(){stopMic();recordAnswer('[Skipped]',0,'',true);}
+
+async function getAIFeedback(ans,skipped){
+  if(skipped){recordAnswer(ans,0,'',true);return;}
+  const q=STATE.questions[STATE.qIndex];
+  showLoader('Alex is evaluating your answer...');
+  setEmotion('thinking');
+  try{
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1000,
+        messages:[{role:"user",content:`You are Alex, a professional, warm, and subtly humorous AI interviewer. You're evaluating a candidate's English interview answer.
+
+CANDIDATE NAME: ${STATE.user.name}
+ROLE: ${STATE.industry.role} (${STATE.industry.name})
+QUESTION [${q.diff} level, ${q.cat} category]: ${q.text}
+CANDIDATE'S ANSWER: ${ans}
+
+Evaluate holistically: content quality, structure, specificity, relevance to the role, communication clarity.
+
+Respond ONLY in valid JSON (no markdown, no backticks):
+{"score":<0-100 integer>,"feedback":"<2-3 sentences: specific praise, what was missing, one actionable improvement. Warm but honest. Occasional light humor. Under 85 words.>","verdict":"<Excellent|Good|Fair|Needs Work>","emotion":"<pleased|curious|skeptical|impressed|neutral>"}`}]
+      })
+    });
+    const data=await resp.json();
+    hideLoader();
+    let score=50,feedback='Good effort! Keep practicing.',verdict='Fair',emotion='neutral';
+    try{
+      const text=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+      const p=JSON.parse(text);
+      score=Math.min(100,Math.max(0,parseInt(p.score)||50));
+      feedback=p.feedback||feedback;
+      verdict=p.verdict||verdict;
+      emotion=p.emotion||'neutral';
+    }catch(e){}
+    setEmotion(emotion);
+    setTimeout(()=>setEmotion('friendly'),3000);
+    recordAnswer(ans,score,feedback,false);
+  }catch(err){
+    hideLoader();
+    const score=localScore(ans,q.diff);
+    recordAnswer(ans,score,'Great answer! Bring more structure and specificity next time.',false);
+  }
+}
+
+function localScore(ans,diff){
+  const w=ans.trim().split(/\s+/).filter(x=>x).length;
+  const hasEx=/\b(for example|when i|i led|i built|i managed|as a result|specifically)\b/i.test(ans);
+  const hasSt=/\b(first|second|then|next|finally|therefore|however)\b/i.test(ans);
+  const hasMeas=/\b(\d+%|\d+ years?|\$\d+|\d+ people|increased|decreased|improved|reduced)\b/i.test(ans);
+  let base=Math.min(100,w*1.4);
+  if(w<15)base*=0.4;
+  if(hasEx)base+=12;if(hasSt)base+=8;if(hasMeas)base+=14;
+  const m={easy:.88,mid:1.0,hard:1.12}[diff]||1;
+  return Math.min(100,Math.round(base*m));
+}
+
+function addPrevItem(idx,q,ans,skipped){
+  document.getElementById('prevWrap').style.display='block';
+  const list=document.getElementById('prevItems');
+  const div=document.createElement('div');
+  div.className='prev-item';
+  div.innerHTML=`<div><div class="prev-badge ${q.diff}">Q${idx+1}</div></div>
+    <div>
+      <div class="prev-q">${q.cat}</div>
+      <div class="prev-a">${skipped?'<em style="color:var(--text3)">Skipped</em>':ans.length>160?ans.slice(0,160)+'…':ans}</div>
+    </div>`;
+  list.appendChild(div);
+}
+
+function markQDot(idx,diff,skipped){
+  const dot=document.getElementById(`qd-${idx}`);
+  if(!dot)return;
+  dot.classList.remove('cur');
+  if(skipped)dot.classList.add('skip');
+  else dot.classList.add('ok-'+diff);
+}
+
+function updateLiveScore(){
+  const real=STATE.answers.filter(a=>!a.skipped);
+  if(!real.length)return;
+  const avg=Math.round(real.reduce((a,b)=>a+b.score,0)/real.length);
+  document.getElementById('liveScore').textContent=avg;
+}
+
+function recordAnswer(ans,score,feedback,skipped){
+  const q=STATE.questions[STATE.qIndex];
+  STATE.answers.push({q,ans,score,feedback,skipped});
+  addPrevItem(STATE.qIndex,q,ans,skipped);
+  markQDot(STATE.qIndex,q.diff,skipped);
+  updateLiveScore();
+  const realCount=STATE.answers.filter(a=>!a.skipped).length;
+  document.getElementById('liveAnswered').textContent=`${realCount}/${STATE.questions.length}`;
+  STATE.qIndex++;
+  document.getElementById('progFill').style.width=((STATE.qIndex/STATE.questions.length)*100)+'%';
+  document.getElementById('progLbl').textContent=`${STATE.qIndex}/${STATE.questions.length}`;
+  if(STATE.qIndex>=STATE.questions.length){
+    const goodbyes=["That was an excellent session! Let me compile your report now.","Well done! One moment while I analyze your full interview.","Impressive effort! Give me a second to finalize your AI report."];
+    speakText(goodbyes[Math.floor(Math.random()*goodbyes.length)],()=>setTimeout(endInterview,1000));
+  }else{
+    const reactions=["Got it — next question coming up.","Interesting. Let's keep going.","Noted! Here's the next one.","Good — moving on now.","Alright, let's continue!"];
+    speakText(reactions[Math.floor(Math.random()*reactions.length)],()=>setTimeout(()=>showQuestion(STATE.qIndex),600));
+  }
+}
+
+async function endInterview(){
+  clearInterval(STATE.timerInterval);
+  if(STATE.blinkTimeout)clearTimeout(STATE.blinkTimeout);
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+  const real=STATE.answers.filter(a=>!a.skipped);
+  const scores=real.map(a=>a.score);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const answered=real.length;
+  const elapsed=Math.floor((Date.now()-STATE.startTime)/1000);
+  const hist={userId:STATE.user.id,industry:STATE.industry.name,role:STATE.industry.role,score:avg,answered,date:new Date().toISOString()};
+  STATE.history.push(hist);
+  localStorage.setItem('hireai_history',JSON.stringify(STATE.history));
+  showLoader('Alex is writing your final AI report...');
+  let verdict='Hold - Second Interview',stars=3,note='Good effort. Keep practicing.',humor="Alex says: You'll do great! 🤖";
+  try{
+    const summary=STATE.answers.map((a,i)=>`Q${i+1}[${a.q.diff}][${a.q.cat}]: ${a.skipped?'Skipped':a.ans.slice(0,180)}`).join('\n');
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1000,
+        messages:[{role:"user",content:`You are Alex, a professional AI interviewer. Write a comprehensive hiring recommendation for:
+CANDIDATE: ${STATE.user.name}
+ROLE: ${STATE.industry.role} (${STATE.industry.name})
+AVERAGE SCORE: ${avg}/100
+ANSWERED: ${answered}/${STATE.answers.length}
+
+INTERVIEW SUMMARY:
+${summary}
+
+Respond ONLY in valid JSON:
+{"verdict":"<Strong Hire|Lean Hire|Hold - Second Interview|Lean No Hire|No Hire>","stars":<1-5>,"note":"<3-4 sentences: professional, specific to their answers, strengths + gaps + recommendation. End with warmth. Under 100 words.>","humor":"<One warm/funny closing line from Alex personally>"}`}]
+      })
+    });
+    const d=await resp.json();
+    const text=d.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(text);
+    verdict=p.verdict||verdict;stars=p.stars||stars;note=p.note||note;humor=p.humor||humor;
+  }catch(e){}
+  hideLoader();
+  showResults(avg,answered,elapsed,verdict,stars,note,humor);
+}
+
+function showResults(avg,answered,elapsed,verdict,stars,note,humor){
+  showScreen('resultsScreen');
+  document.getElementById('resName').textContent=STATE.user.name;
+  const m=Math.floor(elapsed/60),sec=elapsed%60;
+  const vc=stars>=4?'var(--green)':stars===3?'var(--amber)':'var(--red)';
+  document.getElementById('resGrid').innerHTML=`
+    <div class="res-card"><div class="rc-lbl">Overall Score</div><div class="rc-val">${avg}</div><div class="rc-sub">out of 100</div></div>
+    <div class="res-card"><div class="rc-lbl">Answered</div><div class="rc-val" style="color:var(--green)">${answered}</div><div class="rc-sub">of ${STATE.answers.length} questions</div></div>
+    <div class="res-card"><div class="rc-lbl">Time Taken</div><div class="rc-val" style="font-size:22px">${m}m ${sec}s</div><div class="rc-sub">total duration</div></div>
+    <div class="res-card"><div class="rc-lbl">Industry</div><div class="rc-val" style="font-size:16px;line-height:1.3">${STATE.industry.name}</div><div class="rc-sub">${STATE.industry.role}</div></div>
+  `;
+  document.getElementById('vRec').textContent=verdict;
+  document.getElementById('vRec').style.color=vc;
+  document.getElementById('vStars').textContent='★'.repeat(stars)+'☆'.repeat(5-stars);
+  document.getElementById('vNote').innerHTML=`${note}<br><br><em style="color:var(--text3);font-size:13px">— ${humor}</em>`;
+  const ar=document.getElementById('arItemsEl');
+  ar.innerHTML='';
+  STATE.answers.forEach((a,i)=>{
+    const div=document.createElement('div');div.className='ar-item';
+    div.innerHTML=`<div class="ar-q"><strong>Q${i+1} [${a.q.diff.toUpperCase()}] — ${a.q.cat}:</strong> ${a.q.text}</div>
+      <div class="ar-a">${a.skipped?'<em style="color:var(--text3)">Skipped</em>':a.ans}</div>
+      ${!a.skipped?`<div class="ar-sc">Score: ${a.score}/100</div>`:''}
+      ${a.feedback&&!a.skipped?`<div class="ar-fb">💬 Alex: ${a.feedback}</div>`:''}`;
+    ar.appendChild(div);
+  });
+}
+
+function backToDash(){showDash();showScreen('dashScreen');}
+
+/* Avatar animations */
+function setupBlink(){
+  function doBlink(){
+    const ll=document.getElementById('leftLid'),rl=document.getElementById('rightLid');
+    if(!ll)return;
+    ll.setAttribute('ry','14');rl.setAttribute('ry','14');
+    setTimeout(()=>{ll.setAttribute('ry','1');rl.setAttribute('ry','1');},130);
+    STATE.blinkTimeout=setTimeout(doBlink,2500+Math.random()*4500);
+  }
+  STATE.blinkTimeout=setTimeout(doBlink,2000);
+}
+
+function startTalking(){
+  if(STATE.talkInterval)clearInterval(STATE.talkInterval);
+  document.getElementById('speakAura').classList.add('on');
+  setStatus('spk','Alex is speaking...');
+  const inner=document.getElementById('innerMouth');
+  const teeth=document.getElementById('teethEl');
+  const tongue=document.getElementById('tongueEl');
+  STATE.talkInterval=setInterval(()=>{
+    const open=Math.random()>.4;
+    if(open){
+      const o=3+Math.random()*11;
+      inner.setAttribute('ry',o.toFixed(1));
+      teeth.setAttribute('ry',(o*.5).toFixed(1));
+      tongue.setAttribute('ry',(o*.22).toFixed(1));
+    }else{
+      inner.setAttribute('ry','0');teeth.setAttribute('ry','0');tongue.setAttribute('ry','0');
+    }
+  },75+Math.random()*40);
+}
+
+function stopTalking(){
+  document.getElementById('speakAura').classList.remove('on');
+  if(STATE.talkInterval){clearInterval(STATE.talkInterval);STATE.talkInterval=null;}
+  ['innerMouth','teethEl','tongueEl'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.setAttribute('ry','0');
+  });
+  setStatus('','Your turn — answer away!');
+  document.getElementById('ansBox').disabled=false;
+  document.getElementById('micBtn').disabled=false;
+  document.getElementById('submitBtn').disabled=false;
+}
+
+function setStatus(cls,text){
+  const s=document.getElementById('statusStrip');
+  s.className='status-strip '+(cls==='spk'?'spk':cls==='lst'?'lst':'');
+  document.getElementById('statusTxt').textContent=text;
+}
+
+function setEmotion(key){
+  const e=EMOTIONS[key]||EMOTIONS.friendly;
+  const badge=document.getElementById('emotionBadge');
+  badge.style.background=e.bg;badge.style.color=e.col;badge.style.borderColor=e.border;
+  document.getElementById('emotionIcon').textContent=e.icon;
+  document.getElementById('emotionText').textContent=e.text;
+}
+
+function speakText(text,onDone){
+  if(!window.speechSynthesis){if(onDone)onDone();stopTalking();return;}
+  window.speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang='en-US';utt.rate=0.88;utt.pitch=1.06;utt.volume=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const match=voices.find(v=>v.lang.startsWith('en')&&(v.name.includes('Male')||v.name.includes('Daniel')||v.name.includes('Alex')))||
+               voices.find(v=>v.lang.startsWith('en'));
+  if(match)utt.voice=match;
+  utt.onstart=startTalking;
+  utt.onend=()=>{stopTalking();if(onDone)onDone();};
+  utt.onerror=()=>{stopTalking();if(onDone)onDone();};
+  startTalking();
+  setTimeout(()=>window.speechSynthesis.speak(utt),150);
+}
+
+function toggleMic(){if(STATE.micActive)stopMic();else startMicRec();}
+function startMicRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Speech recognition not supported. Please type your answer.');return;}
+  STATE.recognition=new SR();
+  STATE.recognition.lang='en-US';STATE.recognition.continuous=true;STATE.recognition.interimResults=true;
+  STATE.recognition.onresult=(e)=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
+    document.getElementById('ansBox').value=t;updateWordCount();
+  };
+  STATE.recognition.onerror=stopMic;
+  STATE.recognition.onend=()=>{if(STATE.micActive)STATE.recognition.start();};
+  STATE.recognition.start();
+  STATE.micActive=true;
+  const btn=document.getElementById('micBtn');
+  btn.className='ibtn-mic rec';
+  document.getElementById('micIco').textContent='⏹';
+  document.getElementById('micLbl').textContent='Stop';
+  setStatus('lst','Listening...');
+}
+function stopMic(){
+  if(STATE.recognition){STATE.recognition.onend=null;STATE.recognition.stop();STATE.recognition=null;}
+  STATE.micActive=false;
+  const btn=document.getElementById('micBtn');
+  btn.className='ibtn-mic idle';
+  document.getElementById('micIco').textContent='🎙';
+  document.getElementById('micLbl').textContent='Speak';
+  setStatus('','Your turn — answer away!');
+}
+
+function tickTimer(){
+  const e=Math.floor((Date.now()-STATE.startTime)/1000);
+  const m=String(Math.floor(e/60)).padStart(2,'0'),s=String(e%60).padStart(2,'0');
+  const el=document.getElementById('intTimer');
+  el.textContent=`${m}:${s}`;
+  el.className=e>2400?'int-timer urgent':'int-timer';
+}
+
+function showLoader(t){
+  document.getElementById('loaderTxt').textContent=t||'Alex is thinking...';
+  document.getElementById('aiLoader').classList.add('on');
+}
+function hideLoader(){document.getElementById('aiLoader').classList.remove('on');}
+
+let humorInterval=null;
+function startHumorCycle(){
+  let idx=0;const el=document.getElementById('humorStrip');
+  humorInterval=setInterval(()=>{
+    idx=(idx+1)%HUMOR_TIPS.length;
+    el.style.opacity='0';
+    setTimeout(()=>{el.textContent=HUMOR_TIPS[idx];el.style.opacity='1';},400);
+  },8000);
+  el.style.transition='opacity .4s';
+}
+
+/* Profile */
+function openProfile(){
+  const u=STATE.user;
+  const initials=u.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  const av=document.getElementById('profileAvBig');
+  if(u.photo){av.innerHTML=`<img src="${u.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;}
+  else{av.textContent=initials;}
+  document.getElementById('profileFullName').textContent=u.name;
+  document.getElementById('profileEmail').textContent=u.email;
+  document.getElementById('profileRoleTag').innerHTML=`<span class="score-pill high">${u.role}</span>`;
+  const skills=document.getElementById('profileSkills');
+  skills.innerHTML=(u.skills||[]).map(s=>`<div class="skill-chip">${s}</div>`).join('')||'<div style="font-size:13px;color:var(--text3)">No skills added yet.</div>';
+  const myH=STATE.history.filter(h=>h.userId===u.id);
+  const ph=document.getElementById('profileHistory');
+  if(!myH.length){ph.textContent='No interviews completed yet.'}
+  else{ph.innerHTML=myH.slice(-3).reverse().map(h=>`<div style="padding:6px 0;border-bottom:1px solid var(--border)">${h.industry} — <strong>${h.score}/100</strong></div>`).join('');}
+  document.getElementById('profileModal').classList.add('on');
+}
+function closeProfile(){document.getElementById('profileModal').classList.remove('on');}
+function saveSkills(){
+  const input=document.getElementById('skillInput').value.trim();
+  if(!input)return;
+  const skills=input.split(',').map(s=>s.trim()).filter(s=>s);
+  STATE.user.skills=[...(STATE.user.skills||[]),...skills];
+  const idx=STATE.users.findIndex(u=>u.id===STATE.user.id);
+  if(idx>-1)STATE.users[idx]=STATE.user;
+  localStorage.setItem('hireai_users',JSON.stringify(STATE.users));
+  document.getElementById('skillInput').value='';
+  openProfile();
+}
+function handleProfilePhoto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    STATE.user.photo=e.target.result;
+    const idx=STATE.users.findIndex(u=>u.id===STATE.user.id);
+    if(idx>-1)STATE.users[idx]=STATE.user;
+    localStorage.setItem('hireai_users',JSON.stringify(STATE.users));
+    openProfile();
+    showDash();
+  };
+  reader.readAsDataURL(file);
+}
+
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged=()=>{};
+  setTimeout(()=>window.speechSynthesis.getVoices(),500);
+}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){
+    const btn=document.getElementById('submitBtn');
+    if(btn&&!btn.disabled)submitAnswer();
+  }
+});
+</script>
+</body>
+</html>
